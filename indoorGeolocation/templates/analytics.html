@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block style %} <link rel="stylesheet" href="{% static 'analytics.css' %}"> {% endblock %}
+{% block content %}
+<div class="row col-12 justify-content-around">
+    <div class="col-2 visits p-3 rounded-3 h-50 align-self-end">
+        <i class="fa-solid fa-person d-block mb-2"></i>
+        Today:<br/>
+        <span class="h1 fw-bold">{{today_visits}}</span> visits
+    </div>
+    <div class="graphs col-7">
+        <div>
+            <canvas id="visits-per-day">
+                <script>
+                    const ctx1 = document.getElementById('visits-per-day').getContext('2d');
+                    const chart1 = new Chart(ctx1, {
+                    type: 'bar',
+                    data: {
+                        labels: {{ days_labels | safe }},
+                        datasets: [{
+                        label: "Number of arrivals",
+                        data: {{ days_data | safe }},
+                        backgroundColor: 'blue',
+                        borderRadius: 10
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                        xAxes: [{
+                            display: false,
+                            barPercentage: 1.3,
+                            ticks: {
+                            max: 3,
+                            }
+                        }, {
+                            display: true,
+                            ticks: {
+                            autoSkip: false,
+                            max: 4,
+                            }
+                        }],
+                        yAxes: [{
+                            ticks: {
+                            beginAtZero: true
+                            }
+                        }]
+                        }
+                    }
+                    });
+                </script>
+            </canvas>
+        </div>
+
+        <div>
+            <canvas id="visits-per-day-1">
+                <script>
+                    const ctx = document.getElementById('visits-per-day-1').getContext('2d');
+                    const chart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: {{ dates_labels | safe }},
+                        datasets: [{
+                        label: "Number of arrivals",
+                        data: {{ dates_data | safe }},
+                        backgroundColor: "blue",
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                        xAxes: [{
+                            display: false,
+                            barPercentage: 1.3,
+                            ticks: {
+                            max: 3,
+                            }
+                        }, {
+                            display: true,
+                            ticks: {
+                            autoSkip: false,
+                            max: 4,
+                            }
+                        }],
+                        yAxes: [{
+                            ticks: {
+                            beginAtZero: true
+                            }
+                        }]
+                        }
+                    }
+                    });
+                </script>
+            </canvas>
+        </div>
+    </div>
+</div>
+{% endblock %}

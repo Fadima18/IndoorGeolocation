@@ -1,0 +1,71 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>{% block title %}{% endblock %}</title>
+        <!-- Fonts -->
+        <link href="http://fonts.cdnfonts.com/css/glacial-indifference-2" rel="stylesheet">
+        <!-- CSS only -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" crossorigin="anonymous" referrerpolicy="no-referrer"/>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
+        <link rel="stylesheet" href="{% static 'base.css' %}">
+        {% block style %}{% endblock %}
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+        <script src="https://pagination.js.org/dist/2.1.4/pagination.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.8.0/chart.js" integrity="sha512-5m2r+g00HDHnhXQDbRLAfZBwPpPCaK+wPLV6lm8VQ+09ilGdHfXV7IVyKPkLOTfi4vTTUVJnz7ELs7cA87/GMA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    </head>
+    <body>
+        <div class="container-fluid wrapper d-flex justify-content-center">
+            <div class="d-flex flex-column navigation py-5 px-2 text-white my-auto ms-2">
+                <div class="head d-flex">
+                    <h1 class="brand mx-auto"><i class="fa-solid fa-map-location fa-md text-danger"></i></h1>
+                    <h5 class="brand text-uppercase mt-3 fw-bold me-3">Indoor Tracking</h5>
+                </div>
+                <ul class="list-unstyled mt-3 px-2 nav-list">
+                    <li {% if tracking %}class="group d-flex align-items-center ps-3 py-3 my-2 nav-group selected"{% else %}class="group d-flex align-items-center ps-3 py-3 my-2 nav-group"{% endif %}>
+                        <i class="fa-solid fa-location-crosshairs fa-lg blue"></i>
+                        <p class="m-0 h5 ms-3"><a href="{% url 'live_tracking' %}">Live Tracking</a></p>
+                    </li>
+                    <li class="accordion-item py-3 ps-1">
+                        <div class="accordion-header d-flex devices" id="headingOne">
+                            <button class="btn text-white" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                <i class="fa-solid fa-mobile-screen fa-lg orange"></i>
+                                <span class="h5 ms-3">Devices</span>
+                            </button>
+                        </div>
+                        <ul id="collapseOne" class="accordion-collapse collapse ps-5 list-unstyled show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                            <li class="device"><a href="{% url 'track_device' 1 %}">Device 1</a></li>
+                            <li class="device"><a href="{% url 'track_device' 2 %}">Device 2</a></li>
+                        </ul>
+                    </li>
+                    <li class="accordion-item py-3 my-2 ps-1">
+                        <div class="accordion-header d-flex" id="headingTwo">
+                            <button class="btn text-white" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
+                                <i class="fa-solid fa-location-pin fa-lg green"></i> <span class="h5 ms-3">Places</span>
+                            </button>
+                        </div>
+                        <ul id="collapseTwo" class="accordion-collapse collapse ps-5 list-unstyled show" aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
+                            {% for name in names %}
+                                <li {% if nom == name %}class="place px-3"{% else %} class="px-3" {% endif %}><a href="{% url 'track_place' name %}"> {{ name | capfirst }} </a></li>
+                            {% endfor %}
+                        </ul>
+                    </li>
+                    <li {% if analytics %}class="group d-flex align-items-center ps-3 py-3 my-2 nav-group selected"{% else %}class="group d-flex align-items-center ps-3 py-3 my-2 nav-group"{% endif %}>
+                        <i class="fa-solid fa-chart-simple menthe"></i> 
+                        <a class="m-0 h5 ms-3" href="{% url 'analytics' %}">Analytics</a>
+                    </li>
+                    <li class="group d-flex align-items-center ps-3 py-3 my-2 nav-group">
+                        <i class="fa-solid fa-bell"></i> <p class="m-0 h5 ms-3">Notifications</p>
+                    </li>
+                </ul>
+            </div>
+            <div class="map-container d-flex justify-content-center align-items-center mx-3" d-flex justify-content-center align-items-center>
+                {% block content %}
+                {% endblock %}
+            </div>
+        </div>
+        <script src="{% static 'base.js' %}"></script>
+    </body>
+    {% block script %}{% endblock %}
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2" crossorigin="anonymous"></script>
+</html>
