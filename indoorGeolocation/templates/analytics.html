@@ -3,10 +3,12 @@
 {% block style %} <link rel="stylesheet" href="{% static 'analytics.css' %}"> {% endblock %}
 {% block content %}
 <div class="row col-12 justify-content-around">
-    <div class="col-2 visits p-3 rounded-3 h-50 align-self-end">
-        <i class="fa-solid fa-person d-block mb-2"></i>
-        Today:<br/>
-        <span class="h1 fw-bold">{{today_visits}}</span> visits
+    <div class="col-4">
+        <div class="col-6 visits p-3 rounded-3 align-self-end">
+            <i class="fa-solid fa-person d-block mb-2"></i>
+            Today:<br/>
+            <span class="h1 fw-bold">{{today_visits}}</span> visits
+        </div>
     </div>
     <div class="graphs col-7">
         <div>

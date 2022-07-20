@@ -123,6 +123,20 @@ def supervise_place(request, name):
 
 # Analytics
 def view_analytics(request):
+    
+    room_coordinates = {'Tidiane': [14.795032593150454, -16.965048462152478], 
+        'Aziz': [14.795003742888513, -16.96504008024931], 
+        'Fasou': [14.795038103874212, -16.965012587606907],
+        'Assane': [14.794998880484428, -16.96500051766634], 
+        'Fallou': [14.795044587078454, -16.964992471039295],
+        'Ass': [14.795006984491168, -16.9649800658226],
+        'Mor': [14.795058850127111, -16.964958608150482], 
+        'Youssou': [14.795032268990242, -16.964949555695057],
+        'Empty': [14.795066954131599, -16.964938156306744],
+        'Bachir': [14.795037455553775, -16.96492776274681],
+        'Mounir': [14.795072140694318, -16.964903622865677],
+        'Moustapha': [14.795034213951578, -16.964890882372856],
+    }
     # Evolution des visites en fonction des jours de la semaine
     visits = list(Position.objects.values('instant'))
         
@@ -141,5 +155,14 @@ def view_analytics(request):
     today_max = datetime.datetime.combine(datetime.date.today(), datetime.time.max)
     today_visits = Position.objects.filter(instant__range=(today_min, today_max)).count()
     
+    
+    parts = list()
+    rooms = list()
+
+    # Camembert
+    for room, coordinates in room_coordinates.items():
+        parts.append(Position.objects.filter(x=coordinates[0], y=coordinates[1]).count())
+        rooms.append(room)  
+        
     # Evolution des visites en fonction des jours
-    return render(request, 'analytics.html', {'analytics':True, 'days_labels': days_labels, 'days_data': days_data, 'dates_labels': dates_labels, 'dates_data': dates_data, 'today_visits': today_visits})
+    return render(request, 'analytics.html', {'analytics':True, 'days_labels': days_labels, 'days_data': days_data, 'dates_labels': dates_labels, 'dates_data': dates_data, 'today_visits': today_visits, 'rooms': rooms, 'parts': parts})
