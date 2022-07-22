@@ -13,6 +13,7 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
         <script src="https://pagination.js.org/dist/2.1.4/pagination.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.8.0/chart.js" integrity="sha512-5m2r+g00HDHnhXQDbRLAfZBwPpPCaK+wPLV6lm8VQ+09ilGdHfXV7IVyKPkLOTfi4vTTUVJnz7ELs7cA87/GMA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        {% block scriptHead %}{% endblock %}
     </head>
     <body>
         <div class="container-fluid wrapper d-flex justify-content-center">
@@ -38,7 +39,7 @@
                             <li class="device"><a href="{% url 'track_device' 2 %}">Device 2</a></li>
                         </ul>
                     </li>
-                    <li class="accordion-item py-3 my-2 ps-1">
+                    {% comment %} <li class="accordion-item py-3 my-2 ps-1">
                         <div class="accordion-header d-flex" id="headingTwo">
                             <button class="btn text-white" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
                                 <i class="fa-solid fa-location-pin fa-lg green"></i> <span class="h5 ms-3">Places</span>
@@ -49,7 +50,7 @@
                                 <li {% if nom == name %}class="place px-3"{% else %} class="px-3" {% endif %}><a href="{% url 'track_place' name %}"> {{ name | capfirst }} </a></li>
                             {% endfor %}
                         </ul>
-                    </li>
+                    </li> {% endcomment %}
                     <li {% if analytics %}class="group d-flex align-items-center ps-3 py-3 my-2 nav-group selected"{% else %}class="group d-flex align-items-center ps-3 py-3 my-2 nav-group"{% endif %}>
                         <i class="fa-solid fa-chart-simple menthe"></i> 
                         <a class="m-0 h5 ms-3" href="{% url 'analytics' %}">Analytics</a>

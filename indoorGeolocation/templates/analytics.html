@@ -1,100 +1,335 @@
 {% extends 'base.html' %}
 {% load static %}
-{% block style %} <link rel="stylesheet" href="{% static 'analytics.css' %}"> {% endblock %}
+{% block style %}
+    <link rel="stylesheet" href="{% static 'analytics.css' %}"> 
+    <link rel="stylesheet" href="{% static 'places.css' %}"> 
+{% endblock %}
 {% block content %}
-<div class="row col-12 justify-content-around">
-    <div class="col-4">
-        <div class="col-6 visits p-3 rounded-3 align-self-end">
-            <i class="fa-solid fa-person d-block mb-2"></i>
-            Today:<br/>
-            <span class="h1 fw-bold">{{today_visits}}</span> visits
-        </div>
-    </div>
-    <div class="graphs col-7">
-        <div>
-            <canvas id="visits-per-day">
-                <script>
-                    const ctx1 = document.getElementById('visits-per-day').getContext('2d');
-                    const chart1 = new Chart(ctx1, {
-                    type: 'bar',
-                    data: {
-                        labels: {{ days_labels | safe }},
-                        datasets: [{
-                        label: "Number of arrivals",
-                        data: {{ days_data | safe }},
-                        backgroundColor: 'blue',
-                        borderRadius: 10
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        scales: {
-                        xAxes: [{
-                            display: false,
-                            barPercentage: 1.3,
-                            ticks: {
-                            max: 3,
-                            }
-                        }, {
-                            display: true,
-                            ticks: {
-                            autoSkip: false,
-                            max: 4,
-                            }
-                        }],
-                        yAxes: [{
-                            ticks: {
-                            beginAtZero: true
-                            }
-                        }]
-                        }
-                    }
-                    });
-                </script>
-            </canvas>
-        </div>
 
-        <div>
-            <canvas id="visits-per-day-1">
-                <script>
-                    const ctx = document.getElementById('visits-per-day-1').getContext('2d');
-                    const chart = new Chart(ctx, {
-                    type: 'line',
-                    data: {
-                        labels: {{ dates_labels | safe }},
-                        datasets: [{
-                        label: "Number of arrivals",
-                        data: {{ dates_data | safe }},
-                        backgroundColor: "blue",
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        scales: {
-                        xAxes: [{
-                            display: false,
-                            barPercentage: 1.3,
-                            ticks: {
-                            max: 3,
-                            }
-                        }, {
-                            display: true,
-                            ticks: {
-                            autoSkip: false,
-                            max: 4,
-                            }
-                        }],
-                        yAxes: [{
-                            ticks: {
-                            beginAtZero: true
-                            }
-                        }]
+{% if places == False %}
+    <div class="row col-12 justify-content-around">
+        <div class="col-4 d-flex flex-column justify-content-between">
+
+            <div class="col-6 visits p-3 rounded-3 align-self-start mb-3">
+                <i class="fa-solid fa-person d-block mb-2"></i>
+                Today:<br/>
+                <span class="h1 fw-bold">{{today_visits}}</span> visits
+            </div>
+
+            <div class="col-10">
+                <canvas id="doughnut">
+                    <script>
+
+                        function randomColor(){
+                            return Math.floor(Math.random()*16777215).toString(16);
                         }
-                    }
-                    });
-                </script>
-            </canvas>
+
+                        var colors = [];
+
+                        for(i=0; i<{{ rooms | safe }}.length; i++){
+                            colors.push(randomColor());
+                        }
+
+                        console.log(colors);
+
+                        const ctx2 = document.getElementById('doughnut').getContext('2d');
+                        const chart2 = new Chart(ctx2, {
+                        type: 'doughnut',
+                        data: {
+                            labels: {{ rooms | safe }},
+                            datasets: [{
+                            label: "Number of arrivals",
+                            data: {{ parts | safe }},
+                            backgroundColor: colors,
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            scales: {
+                            xAxes: [{
+                                display: false,
+                                barPercentage: 1.3,
+                                ticks: {
+                                max: 3,
+                                }
+                            }, {
+                                display: true,
+                                ticks: {
+                                autoSkip: false,
+                                max: 4,
+                                }
+                            }],
+                            yAxes: [{
+                                ticks: {
+                                beginAtZero: true
+                                }
+                            }]
+                            }
+                        }
+                        });
+                    </script>
+                </canvas>
+            </div>
+
+            <div class="col-10">
+                <canvas id="doughnut1">
+                    <script>
+
+                        function randomColor(){
+                            return Math.floor(Math.random()*16777215).toString(16);
+                        }
+
+                        var colors = [];
+
+                        for(i=0; i<{{ today_rooms | safe }}.length; i++){
+                            colors.push(randomColor());
+                        }
+
+                        const ctx3 = document.getElementById('doughnut1').getContext('2d');
+                        const chart3 = new Chart(ctx3, {
+                        type: 'doughnut',
+                        data: {
+                            labels: {{ today_rooms | safe }},
+                            datasets: [{
+                            label: "Number of arrivals",
+                            data: {{ today_parts | safe }},
+                            backgroundColor: colors,
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            scales: {
+                            xAxes: [{
+                                display: false,
+                                barPercentage: 1.3,
+                                ticks: {
+                                max: 3,
+                                }
+                            }, {
+                                display: true,
+                                ticks: {
+                                autoSkip: false,
+                                max: 4,
+                                }
+                            }],
+                            yAxes: [{
+                                ticks: {
+                                beginAtZero: true
+                                }
+                            }]
+                            }
+                        }
+                        });
+                    </script>
+                </canvas>
+            </div>
+
+        </div>
+        <div class="graphs col-6 d-flex flex-column justify-content-around">
+            <form action="{% url 'analytics' %}" method="post">
+                {% csrf_token %}
+                {{ form }}
+                <button type="submit" class="ms-4 text-white bg-primary btn"> Go </button>
+            </form>
+            <div>
+                <canvas id="visits-per-day">
+                    <script>
+                        const ctx1 = document.getElementById('visits-per-day').getContext('2d');
+                        const chart1 = new Chart(ctx1, {
+                        type: 'bar',
+                        data: {
+                            labels: {{ days_labels | safe }},
+                            datasets: [{
+                            label: "Number of arrivals",
+                            data: {{ days_data | safe }},
+                            backgroundColor: 'blue',
+                            borderRadius: 10,
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            scales: {
+                            xAxes: [{
+                                display: false,
+                                barPercentage: 1.3,
+                                ticks: {
+                                max: 3,
+                                }
+                            }, {
+                                display: true,
+                                ticks: {
+                                autoSkip: false,
+                                max: 4,
+                                }
+                            }],
+                            yAxes: [{
+                                ticks: {
+                                beginAtZero: true
+                                }
+                            }]
+                            }
+                        }
+                        });
+                    </script>
+                </canvas>
+            </div>
+
+            <div>
+                <canvas id="visits-per-day-1">
+                    <script>
+                        const ctx = document.getElementById('visits-per-day-1').getContext('2d');
+                        const chart = new Chart(ctx, {
+                        type: 'line',
+                        data: {
+                            labels: {{ dates_labels | safe }},
+                            datasets: [{
+                            label: "Number of arrivals",
+                            data: {{ dates_data | safe }},
+                            backgroundColor: "blue",
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            scales: {
+                            xAxes: [{
+                                display: false,
+                                barPercentage: 1.3,
+                                ticks: {
+                                max: 3,
+                                }
+                            }, {
+                                display: true,
+                                ticks: {
+                                autoSkip: false,
+                                max: 4,
+                                }
+                            }],
+                            yAxes: [{
+                                ticks: {
+                                beginAtZero: true
+                                }
+                            }]
+                            }
+                        }
+                        });
+                    </script>
+                </canvas>
+            </div>
         </div>
     </div>
-</div>
+{% else %}
+    <div class="col-4 d-inline d-flex flex-column justify-content-center align-items-center">
+        <table class="mb-4" id="table">
+            <thead>
+                <tr>
+                    <th class="text-center">Devices</th>
+                    <th class="text-center">Time</th>
+                </tr>
+            </thead>
+            <tbody id="data-container">
+            {% for record in records %}
+                <tr>
+                    <td>{{record.device.name}}</td>
+                    <td>{{record.instant}}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        <div id="pagination" class="me-4"></div>
+    </div>
+    <div class="col-7">
+        <div class="row justify-content-between mb-5">
+            <div class="col-3 visits p-3 rounded-3 h-50 align-self-end">
+                <i class="fa-solid fa-person d-block mb-2"></i>
+                Today:<br/>
+                <span class="h1 fw-bold">{{today_visits}}</span> visits
+            </div>
+            <div class="col-8">
+                <canvas id="histogram1">
+                    <script>
+                        const ctx1 = document.getElementById('histogram1').getContext('2d');
+                        const chart1 = new Chart(ctx1, {
+                        type: 'bar',
+                        data: {
+                            labels: {{ days_labels | safe }},
+                            datasets: [{
+                            label: "Number of arrivals",
+                            data: {{ days_data | safe }},
+                            backgroundColor: 'blue',
+                            borderRadius: 10
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            scales: {
+                            xAxes: [{
+                                display: false,
+                                barPercentage: 1.3,
+                                ticks: {
+                                max: 3,
+                                }
+                            }, {
+                                display: true,
+                                ticks: {
+                                autoSkip: false,
+                                max: 4,
+                                }
+                            }],
+                            yAxes: [{
+                                ticks: {
+                                beginAtZero: true
+                                }
+                            }]
+                            }
+                        }
+                        });
+                    </script>
+                </canvas>
+            </div>
+        </div>
+        <canvas id="histogram">
+            <script>
+                const ctx = document.getElementById('histogram').getContext('2d');
+
+                const chart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: {{ labels | safe }},
+                    datasets: [{
+                    label: "Number of arrivals",
+                    data: {{ data | safe }},
+                    backgroundColor: 'blue',
+                    borderRadius: 10
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                    xAxes: [{
+                        display: false,
+                        barPercentage: 1.3,
+                        ticks: {
+                        max: 3,
+                        }
+                    }, {
+                        display: true,
+                        ticks: {
+                        autoSkip: false,
+                        max: 4,
+                        }
+                    }],
+                    yAxes: [{
+                        ticks: {
+                        beginAtZero: true
+                        }
+                    }]
+                    }
+                }
+                });
+
+            </script>
+        </canvas>
+    </div>
+{% endif %}
+{% block script %} <script src="{% static 'places.js' %}"></script> {% endblock %}
 {% endblock %}
