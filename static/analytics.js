@@ -1,14 +1,16 @@
-function randomColor(){
-    return Math.floor(Math.random()*16777215).toString(16);
-}
+select = document.querySelector("select");
+select.classList = "form-select";
+console.log(select.classList);
 
-let rows = []
+console.log("Moussa");
+
+let rowsList = [];
 $('table tbody tr').each(function(i, row) {
-	return rows.push(row);
+	return rowsList.push(row);
 });
 
 $('#pagination').pagination({
-    dataSource: rows,
+    dataSource: rowsList,
     pageSize: 15,
     prevText: '<i class="fa-solid fa-circle-chevron-left fa-xl"></i>',
     nextText: '<i class="fa-solid fa-circle-chevron-right fa-xl"></i>',

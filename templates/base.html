@@ -23,11 +23,11 @@
                     <h5 class="brand text-uppercase mt-3 fw-bold me-3">Indoor Tracking</h5>
                 </div>
                 <ul class="list-unstyled mt-3 px-2 nav-list">
-                    <li {% if tracking %}class="group d-flex align-items-center ps-3 py-3 my-2 nav-group selected"{% else %}class="group d-flex align-items-center ps-3 py-3 my-2 nav-group"{% endif %}>
+                    <li {% if tracking %}class="group d-flex align-items-center ps-3 py-3 my-3 nav-group selected"{% else %}class="group d-flex align-items-center ps-3 py-3 my-2 nav-group"{% endif %}>
                         <i class="fa-solid fa-location-crosshairs fa-lg blue"></i>
                         <p class="m-0 h5 ms-3"><a href="{% url 'live_tracking' %}">Live Tracking</a></p>
                     </li>
-                    <li class="accordion-item py-3 ps-1">
+                    <li class="accordion-item py-3 ps-1 my-3">
                         <div class="accordion-header d-flex devices" id="headingOne">
                             <button class="btn text-white" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
                                 <i class="fa-solid fa-mobile-screen fa-lg orange"></i>
@@ -39,23 +39,11 @@
                             <li class="device"><a href="{% url 'track_device' 2 %}">Device 2</a></li>
                         </ul>
                     </li>
-                    {% comment %} <li class="accordion-item py-3 my-2 ps-1">
-                        <div class="accordion-header d-flex" id="headingTwo">
-                            <button class="btn text-white" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
-                                <i class="fa-solid fa-location-pin fa-lg green"></i> <span class="h5 ms-3">Places</span>
-                            </button>
-                        </div>
-                        <ul id="collapseTwo" class="accordion-collapse collapse ps-5 list-unstyled show" aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
-                            {% for name in names %}
-                                <li {% if nom == name %}class="place px-3"{% else %} class="px-3" {% endif %}><a href="{% url 'track_place' name %}"> {{ name | capfirst }} </a></li>
-                            {% endfor %}
-                        </ul>
-                    </li> {% endcomment %}
-                    <li {% if analytics %}class="group d-flex align-items-center ps-3 py-3 my-2 nav-group selected"{% else %}class="group d-flex align-items-center ps-3 py-3 my-2 nav-group"{% endif %}>
+                    <li {% if analytics %}class="group d-flex align-items-center ps-3 py-3 my-3 nav-group selected"{% else %}class="group d-flex align-items-center ps-3 py-3 my-2 nav-group"{% endif %}>
                         <i class="fa-solid fa-chart-simple menthe"></i> 
                         <a class="m-0 h5 ms-3" href="{% url 'analytics' %}">Analytics</a>
                     </li>
-                    <li class="group d-flex align-items-center ps-3 py-3 my-2 nav-group">
+                    <li class="group d-flex align-items-center ps-3 py-3 my-3 nav-group">
                         <i class="fa-solid fa-bell"></i> <p class="m-0 h5 ms-3">Notifications</p>
                     </li>
                 </ul>

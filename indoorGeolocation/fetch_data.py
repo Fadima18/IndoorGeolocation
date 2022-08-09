@@ -2,6 +2,10 @@ VER  = "2021-05-24 v1.2"
 import os, sys, logging, time
 import paho.mqtt.client as mqtt
 import json
+import threading
+import pickle
+
+from .models import Position
 
 # room_coordinates = {
 #         'Tidiane': [14.795032593150454, -16.965048462152478], 
@@ -59,6 +63,9 @@ room_coordinates = {
     'Chambre10': [14.794952849720433, -16.965229511260983]
 }
 
+model = pickle.load(open('indoorGeolocation/chamodel.pkl', 'rb'))
+file = 1
+
 class TTNRequest:
     
     rssi_data = dict()
@@ -69,6 +76,7 @@ class TTNRequest:
     theRegion = "EU1"		# The region you are using
 
     # Write uplink to tab file
+    @staticmethod
     def getRssiData(msg):
         if("uplink_message" in msg):	
             # Metadata of lora packets
@@ -91,33 +99,43 @@ class TTNRequest:
                 TTNRequest.rssi_data["rssi1"] = gateway1["received_rssi"]
                 TTNRequest.rssi_data["rssi2"] = gateway2["received_rssi"]
                 TTNRequest.rssi_data["rssi3"] = gateway3["received_rssi"]
+                
+                global file
+                filename = "indoorGeolocation/Data/test/" + str(file) 
             else:
                 print("Less than 3 gateways received the packet")
         else:
             pass
 
     # MQTT event functions
+    @staticmethod
     def on_connect(mqttc, obj, flags, rc):
         print("\nConnect: rc = " + str(rc))
 
+    @staticmethod
     def on_message(mqttc, obj, msg):
         print("\nMessage: " + msg.topic + " " + str(msg.qos)) # + " " + str(msg.payload))
         parsedJSON = json.loads(msg.payload)
         TTNRequest.getRssiData(parsedJSON)
-        
+        position = model.predict(TTNRequest.rssi_data)
+        new_position = Position(x=position[0], y=position[1], device_id=1)
+        new_position.save()
+    
+    @staticmethod
     def on_subscribe(mqttc, obj, mid, granted_qos):
         print("\nSubscribe: " + str(mid) + " " + str(granted_qos))
 
-    def fetch_data(self):
+    @staticmethod
+    def fetch_data():
         mqttc = mqtt.Client()
-        mqttc.on_connect = self.on_connect
-        mqttc.on_subscribe = self.on_subscribe
-        mqttc.on_message = self.on_message
+        mqttc.on_connect = TTNRequest.on_connect
+        mqttc.on_subscribe = TTNRequest.on_subscribe
+        mqttc.on_message = TTNRequest.on_message
 
         # Setup authentication from settings above
-        mqttc.username_pw_set(self.User, self.Password)
+        mqttc.username_pw_set(TTNRequest.User, TTNRequest.Password)
         mqttc.tls_set()	
-        mqttc.connect(self.theRegion.lower() + ".cloud.thethings.network", 8883, 60)
+        mqttc.connect(TTNRequest.theRegion.lower() + ".cloud.thethings.network", 8883, 60)
         mqttc.subscribe("#", 0)	# all device uplinks
         print("All is done, now run forever")
 
@@ -130,3 +148,7 @@ class TTNRequest:
         except KeyboardInterrupt:
             print("Exit")
             sys.exit(0)
+
+if __name__=="__main__":
+    th = threading.Thread(target=TTNRequest.fetch_data)
+    th.start()

@@ -8,15 +8,23 @@
 
 {% if places == False %}
     <div class="row col-12 justify-content-around">
-        <div class="col-4 d-flex flex-column justify-content-between">
+        <div class="col-5 d-flex flex-column justify-content-between">
 
-            <div class="col-6 visits p-3 rounded-3 align-self-start mb-3">
-                <i class="fa-solid fa-person d-block mb-2"></i>
-                Today:<br/>
-                <span class="h1 fw-bold">{{today_visits}}</span> visits
+            <div class="col-12 d-flex justify-content-around">
+                <div class="col-5 visits p-3 rounded-3 align-self-start mb-3">
+                    <i class="fa-solid fa-person d-block my-3 fa-lg"></i>
+                    Today:<br/>
+                    <span class="display-5 fw-bold">{{today_visits}}</span> <span class="fw-bold">visits</span>
+                </div>
+                <div class="col-6 popular align-self-start mb-3 ms-5 d-flex flex-column">
+                    <p class="fw-bold m-0 mb-2">Popular places :</p>
+                    {% for place in popular_places %}
+                        <p class="fw-bold py-1 px-2 mt-1 mb-0 col-6 popular-place text-center">{{ place }}</p>
+                    {% endfor %}
+                </div>
             </div>
 
-            <div class="col-10">
+            <div class="col-8">
                 <canvas id="doughnut">
                     <script>
 
@@ -29,8 +37,6 @@
                         for(i=0; i<{{ rooms | safe }}.length; i++){
                             colors.push(randomColor());
                         }
-
-                        console.log(colors);
 
                         const ctx2 = document.getElementById('doughnut').getContext('2d');
                         const chart2 = new Chart(ctx2, {
@@ -71,14 +77,9 @@
                 </canvas>
             </div>
 
-            <div class="col-10">
+            <div class="col-8">
                 <canvas id="doughnut1">
                     <script>
-
-                        function randomColor(){
-                            return Math.floor(Math.random()*16777215).toString(16);
-                        }
-
                         var colors = [];
 
                         for(i=0; i<{{ today_rooms | safe }}.length; i++){
@@ -126,11 +127,16 @@
 
         </div>
         <div class="graphs col-6 d-flex flex-column justify-content-around">
-            <form action="{% url 'analytics' %}" method="post">
-                {% csrf_token %}
-                {{ form }}
-                <button type="submit" class="ms-4 text-white bg-primary btn"> Go </button>
-            </form>
+            <div class="formulaire">
+                <p class="fw-bold">Sélectionner une place pour voir ses statistiques</p>
+                <form action="{% url 'analytics' %}" method="post" class="d-flex">
+                    <div class="form-group">
+                        {{ form.room }}
+                    </div>
+                    {% csrf_token %}
+                    <button type="submit" class="ms-4 text-white bg-primary btn"> Go </button>
+                </form>
+            </div>
             <div>
                 <canvas id="visits-per-day">
                     <script>
@@ -140,7 +146,7 @@
                         data: {
                             labels: {{ days_labels | safe }},
                             datasets: [{
-                            label: "Number of arrivals",
+                            label: "Nombre moyen de visites dans la semaine",
                             data: {{ days_data | safe }},
                             backgroundColor: 'blue',
                             borderRadius: 10,
@@ -183,7 +189,7 @@
                         data: {
                             labels: {{ dates_labels | safe }},
                             datasets: [{
-                            label: "Number of arrivals",
+                            label: "Évolution du nombre de visites",
                             data: {{ dates_data | safe }},
                             backgroundColor: "blue",
                             }]
@@ -253,7 +259,7 @@
                         data: {
                             labels: {{ days_labels | safe }},
                             datasets: [{
-                            label: "Number of arrivals",
+                            label: "Nombre d'arrivées dans la semaine",
                             data: {{ days_data | safe }},
                             backgroundColor: 'blue',
                             borderRadius: 10
@@ -296,7 +302,7 @@
                 data: {
                     labels: {{ labels | safe }},
                     datasets: [{
-                    label: "Number of arrivals",
+                    label: "Nombre d'arrivées en fonction des heures",
                     data: {{ data | safe }},
                     backgroundColor: 'blue',
                     borderRadius: 10
@@ -331,5 +337,8 @@
         </canvas>
     </div>
 {% endif %}
-{% block script %} <script src="{% static 'places.js' %}"></script> {% endblock %}
+{% block script %}
+    <script src="{% static 'places.js' %}"></script>
+    <script src="{% static 'analytics.js' %}"></script>
+{% endblock %}
 {% endblock %}
