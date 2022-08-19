@@ -12,12 +12,41 @@ from .forms import RoomForm
 import threading
 
 # Create your views here.
+        
+def style_function(x):
+    if(x['geometry']['type'] == 'Polygon'):
+        if(x['properties'] == {}):
+            return dict({
+                'color': '#676767',
+                'weight': 2,
+                'fillColor': '#676767',
+                'fillOpacity': 0.8
+            })
+        else:
+            return dict({
+                'color': x['properties']['stroke'],
+                'fillColor': x['properties']['fill'],
+                'weight': x['properties']['stroke-width'],
+                'fillOpacity': x['properties']['fill-opacity']
+            })
+    elif(x['geometry']['type'] == 'LineString'):
+        if(x['properties'] == {}):
+            return {
+                'color': "#454545",
+                'weight': 3
+            }
+        else: 
+            return {
+                'color': '#db1b0d',
+                'weight': 4,
+            }
 
 def create_indoor_map():
+    
     map_center = (14.794991102571805, -16.965043260134312)
     indoor_map = folium.Map(location=map_center, width = "100%", zoom_start = 22, max_zoom=100)
     pavillon = 'indoorGeolocation/h2.geojson'
-    folium.GeoJson(pavillon, name="Pavillon H2").add_to(indoor_map)
+    folium.GeoJson(pavillon, style_function=style_function).add_to(indoor_map)
     return indoor_map
 
 def render_indoor_map(indoor_map):
@@ -26,17 +55,12 @@ def render_indoor_map(indoor_map):
 
 def map_render(request):
     coordinates = list(room_coordinates.values())
-    map_center = (14.794991102571805, -16.965043260134312)
-    indoor_map = folium.Map(location=map_center, width = "100%", zoom_start = 22, max_zoom=100)
-    pavillon = 'indoorGeolocation/h2.geojson'
-    folium.GeoJson(pavillon, name="Pavillon H2").add_to(indoor_map)
+    indoor_map = create_indoor_map()
     
     map_html = indoor_map._repr_html_()
     
     if(request.POST.get('action') == 'post'):
-        map_center = (14.794991102571805, -16.965043260134312)
-        indoor_map = folium.Map(location = map_center, width = "100%", zoom_start = 22, max_zoom=100)
-        folium.GeoJson(pavillon, name="Pavillon H2").add_to(indoor_map)
+        indoor_map = create_indoor_map()
         position = random.choice(coordinates)
         # position = Position.objects.order_by("-instant")[0]
         new_position = Position(x=position[0], y=position[1], device_id=1)
@@ -163,11 +187,11 @@ def view_analytics(request):
     popular_numbers.sort()
     popular_numbers = popular_numbers[-1:-4:-1]
     
-    place1 = filter(lambda x : True if x == popular_numbers[0] else False, popular_numbers)
-    place2 = filter(lambda x : True if x == popular_numbers[1] else False, popular_numbers)
-    place3 = filter(lambda x : True if x == popular_numbers[2] else False, popular_numbers)
+    place1 = list(filter(lambda x : True if x == popular_numbers[0] else False, popular_numbers))
+    place2 = list(filter(lambda x : True if x == popular_numbers[1] else False, popular_numbers))
+    place3 = list(filter(lambda x : True if x == popular_numbers[2] else False, popular_numbers))
     
-    popular_places = [place1, place2, place3]
+    popular_places = [place1[0], place2[0], place3[0]]
             
     form = RoomForm()
     
