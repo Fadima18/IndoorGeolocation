@@ -1,4 +1,6 @@
 from enum import unique
+from turtle import color, position
+from venv import create
 from django.shortcuts import render
 import folium 
 import asyncio, time
@@ -61,11 +63,14 @@ def map_render(request):
     
     if(request.POST.get('action') == 'post'):
         indoor_map = create_indoor_map()
-        position = random.choice(coordinates)
-        # position = Position.objects.order_by("-instant")[0]
-        new_position = Position(x=position[0], y=position[1], device_id=1)
-        new_position.save()
-        folium.Marker(location=position).add_to(indoor_map)
+        position1 = random.choice(coordinates)
+        position2 = random.choice(coordinates)
+        new_position1 = Position(x=position1[0], y=position1[1], device_id=1)
+        new_position2 = Position(x=position2[0], y=position2[1], device_id=2)
+        new_position1.save()
+        new_position2.save()
+        folium.Marker(location=position1, marker_color='red').add_to(indoor_map)
+        folium.Marker(location=position2).add_to(indoor_map)
         map_html = indoor_map._repr_html_()     
         response = {'map': map_html}
         return JsonResponse(response)
@@ -74,19 +79,28 @@ def map_render(request):
 
 
 def track_device(request, id):
-    tracked_positions = list()
-    indoor_map = create_indoor_map()
-    known_positions = list(Position.objects.filter(device_id=id).distinct().values('x', 'y'))
-    for position in known_positions:
-        new_position = Position.objects.filter(x=position['x'], y=position['y']).latest('instant')
-        tracked_positions.append(new_position)
+    # tracked_positions = list()
+    # indoor_map = create_indoor_map()
+    # known_positions = list(Position.objects.filter(device_id=id).distinct().values('x', 'y'))
+    # for position in known_positions:
+    #     new_position = Position.objects.filter(x=position['x'], y=position['y']).latest('instant')
+    #     tracked_positions.append(new_position)
     
-    for position in tracked_positions:
-        folium.Marker(location=[position.x, position.y], popup= "Last seen here " + str(position.instant)).add_to(indoor_map)
+    # for position in tracked_positions:
+    #     folium.Marker(location=[position.x, position.y], popup= "Last seen here " + str(position.instant)).add_to(indoor_map)
         
-    indoor_map_render = render_indoor_map(indoor_map)
+    # indoor_map_render = render_indoor_map(indoor_map)
     
-    return render(request, 'device_tracking.html', {'map': indoor_map_render})   
+    # return render(request, 'device_tracking.html', {'map': indoor_map_render})
+    coordinates = list(room_coordinates.values())
+    indoor_map = create_indoor_map
+    map_html = indoor_map._repr_html_()
+    
+    if(request.POST.get('action') == 'post'):
+        indoor_map = create_indoor_map()
+        position1 = random.choice(coordinates)
+        new_position1 = Position(x=position1[0], y=position1[1], device_id=1)
+        
 
 def supervise_place_bis(name):
     room = room_coordinates[name]
@@ -183,16 +197,11 @@ def view_analytics(request):
         today_rooms.append(room)
         
     # Most popular places
-    popular_numbers = np.array(parts)
-    popular_numbers.sort()
-    popular_numbers = popular_numbers[-1:-4:-1]
+    zipped = list(zip(parts, rooms))
+    res = sorted(zipped, key=lambda x: x[0])
     
-    place1 = list(filter(lambda x : True if x == popular_numbers[0] else False, popular_numbers))
-    place2 = list(filter(lambda x : True if x == popular_numbers[1] else False, popular_numbers))
-    place3 = list(filter(lambda x : True if x == popular_numbers[2] else False, popular_numbers))
+    popular_places = res[-1:-4:-1]
     
-    popular_places = [place1[0], place2[0], place3[0]]
-            
     form = RoomForm()
     
     if request.method == 'POST':
