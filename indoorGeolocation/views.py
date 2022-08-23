@@ -1,4 +1,4 @@
-from enum import unique
+from cgi import test
 from turtle import color, position
 from venv import create
 from django.shortcuts import render
@@ -6,10 +6,10 @@ import folium
 import asyncio, time
 import random
 from django.http import JsonResponse
-from .models import Device, Position
+from .models import Device, Position, Person, Material
 import numpy as np
 import datetime
-from .fetch_data import room_coordinates
+from .fetch_data import room_coordinates, compartiments_coordinates
 from .forms import RoomForm
 import threading
 
@@ -44,16 +44,11 @@ def style_function(x):
             }
 
 def create_indoor_map():
-    
     map_center = (14.794991102571805, -16.965043260134312)
     indoor_map = folium.Map(location=map_center, width = "100%", zoom_start = 22, max_zoom=100)
     pavillon = 'indoorGeolocation/h2.geojson'
     folium.GeoJson(pavillon, style_function=style_function).add_to(indoor_map)
     return indoor_map
-
-def render_indoor_map(indoor_map):
-    map_html = indoor_map._repr_html_()
-    return map_html  
 
 def map_render(request):
     coordinates = list(room_coordinates.values())
@@ -78,30 +73,36 @@ def map_render(request):
     return render(request, 'map.html', {'map': map_html, 'tracking':True})
 
 
-def track_device(request, id):
-    # tracked_positions = list()
-    # indoor_map = create_indoor_map()
-    # known_positions = list(Position.objects.filter(device_id=id).distinct().values('x', 'y'))
-    # for position in known_positions:
-    #     new_position = Position.objects.filter(x=position['x'], y=position['y']).latest('instant')
-    #     tracked_positions.append(new_position)
+def track_material(request):
+    coordinates = list(compartiments_coordinates.values())
+    indoor_map = create_indoor_map()
+    materials = list(Material.objects.all())
+    positions = list(random.sample(coordinates, len(materials)))
     
-    # for position in tracked_positions:
-    #     folium.Marker(location=[position.x, position.y], popup= "Last seen here " + str(position.instant)).add_to(indoor_map)
-        
-    # indoor_map_render = render_indoor_map(indoor_map)
-    
-    # return render(request, 'device_tracking.html', {'map': indoor_map_render})
+    for material, position in zip(materials, positions):
+        folium.Marker(location=position, marker_color='red', popup=material.name).add_to(indoor_map)
+    map_html = indoor_map._repr_html_()
+
+    return render(request, 'material_tracking.html', {'map': map_html})
+
+def track_person(request):
     coordinates = list(room_coordinates.values())
-    indoor_map = create_indoor_map
+    indoor_map = create_indoor_map()
     map_html = indoor_map._repr_html_()
     
     if(request.POST.get('action') == 'post'):
+        test_person = Person.objects.get(id=2)
         indoor_map = create_indoor_map()
-        position1 = random.choice(coordinates)
-        new_position1 = Position(x=position1[0], y=position1[1], device_id=1)
-        
-
+        position = random.choice(coordinates)
+        new_position = Position(x=position[0], y=position[1], device_id=test_person.device.id)
+        folium.Marker(location=position).add_to(indoor_map)
+        map_html = indoor_map._repr_html_()
+        new_position.save()
+        response = {'map': map_html}
+        return JsonResponse(response)
+    
+    return render(request, 'person_tracking.html', {'map': map_html})
+    
 def supervise_place_bis(name):
     room = room_coordinates[name]
     today_min = datetime.datetime.combine(datetime.date.today(), datetime.time.min)

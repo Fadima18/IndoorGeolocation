@@ -13,8 +13,6 @@
                 success: function(json){
                     map_code = ($.parseHTML(json['map']))[0];
                     console.log(map_code);
-                    // if(document.querySelector('span')) document.querySelector('span').remove();
-                    // if(map_code.querySelector('span')) map_code.querySelector('span').remove();
                     document.querySelector('iframe').outerHTML = map_code.querySelector('iframe').outerHTML;
                 },
                 error: function(xhr, errmsg, err){}

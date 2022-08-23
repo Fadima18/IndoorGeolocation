@@ -1,0 +1,13 @@
+    # tracked_positions = list()
+    # indoor_map = create_indoor_map()
+    # known_positions = list(Position.objects.filter(device_id=id).distinct().values('x', 'y'))
+    # for position in known_positions:
+    #     new_position = Position.objects.filter(x=position['x'], y=position['y']).latest('instant')
+    #     tracked_positions.append(new_position)
+    
+    # for position in tracked_positions:
+    #     folium.Marker(location=[position.x, position.y], popup= "Last seen here " + str(position.instant)).add_to(indoor_map)
+        
+    # indoor_map_render = render_indoor_map(indoor_map)
+    
+    # return render(request, 'device_tracking.html', {'map': indoor_map_render})

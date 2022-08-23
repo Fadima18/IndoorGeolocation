@@ -23,34 +23,36 @@
                     <h5 class="brand text-uppercase mt-3 fw-bold me-3">Indoor Tracking</h5>
                 </div>
                 <ul class="list-unstyled mt-3 px-2 nav-list">
-                    <li {% if tracking %}class="group d-flex align-items-center ps-3 py-3 my-3 nav-group selected"{% else %}class="group d-flex align-items-center ps-3 py-3 my-2 nav-group"{% endif %}>
-                        <i class="fa-solid fa-location-crosshairs fa-lg blue"></i>
-                        <p class="m-0 h5 ms-3"><a href="{% url 'live_tracking' %}">Live Tracking</a></p>
-                    </li>
-                    <li class="accordion-item py-3 ps-1 my-3">
-                        <div class="accordion-header d-flex devices" id="headingOne">
-                            <button class="btn text-white" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                                <i class="fa-solid fa-mobile-screen fa-lg orange"></i>
-                                <span class="h5 ms-3">Devices</span>
-                            </button>
-                        </div>
-                        <ul id="collapseOne" class="accordion-collapse collapse ps-5 list-unstyled show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
-                            <li class="device"><a href="{% url 'track_device' 1 %}">Device 1</a></li>
-                            <li class="device"><a href="{% url 'track_device' 2 %}">Device 2</a></li>
+                    <div>
+                        <li {% if tracking %}class="group d-flex align-items-center ps-3 py-3 my-3 nav-group selected"{% else %}class="group d-flex align-items-center ps-3 py-3 my-2 nav-group"{% endif %}>
+                            <i class="fa-solid fa-location-crosshairs fa-lg blue"></i>
+                            <p class="m-0 h5 ms-3"><a href="{% url 'live_tracking' %}">Live Tracking</a></p>
+                        </li>
+                        <ul>
+                            <li class="accordion-item py-2 ps-1 my-0">
+                                <div class="accordion-header d-flex devices" id="headingOne">
+                                    <button class="btn text-white" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                        <i class="fa-solid fa-mobile-screen fa-lg orange"></i>
+                                        <span class="h5 ms-3">Materials</span>
+                                    </button>
+                                </div>
+                                <ul id="collapseOne" class="accordion-collapse collapse ps-5 list-unstyled show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                                    <li class="device"><a href="{% url 'track_material' %}">Device 1</a></li>
+                                </ul>
+                            </li>
+                            <li class="accordion-item py-2 ps-1 my-0">
+                                <div class="accordion-header d-flex devices" id="headingTwo">
+                                    <button class="btn text-white" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="true" aria-controls="collapseOne">
+                                        <i class="fa-solid fa-people-carry-box"></i>
+                                        <span class="h5 ms-3">Persons</span>
+                                    </button>
+                                </div>
+                                <ul id="collapseTwo" class="accordion-collapse collapse ps-5 list-unstyled show" aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
+                                    <li class="device"><a href="{% url 'track_person' %}">Mohamed Massamba Sène</a></li>
+                                </ul>
+                            </li>
                         </ul>
-                    </li>
-                    <li class="accordion-item py-3 ps-1 my-3">
-                        <div class="accordion-header d-flex devices" id="headingOne">
-                            <button class="btn text-white" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                                <i class="fa-solid fa-mobile-screen fa-lg orange"></i>
-                                <span class="h5 ms-3">People</span>
-                            </button>
-                        </div>
-                        <ul id="collapseOne" class="accordion-collapse collapse ps-5 list-unstyled show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
-                            <li class="device"><a href="{% url 'track_person' Massamba %}">Device 1</a></li>
-                            <li class="device"><a href="{% url 'track_person' Ndeye Fatou %}">Device 2</a></li>
-                        </ul>
-                    </li>
+                    </div>
                     <li {% if analytics %}class="group d-flex align-items-center ps-3 py-3 my-3 nav-group selected"{% else %}class="group d-flex align-items-center ps-3 py-3 my-2 nav-group"{% endif %}>
                         <i class="fa-solid fa-chart-simple menthe"></i> 
                         <a class="m-0 h5 ms-3" href="{% url 'analytics' %}">Analytics</a>
