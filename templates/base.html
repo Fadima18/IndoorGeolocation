@@ -23,21 +23,18 @@
                 </div>
                 <ul class="list-unstyled mt-3 px-2 nav-list">
                     <div>
-                        <li class="group d-flex align-items-center ps-3 py-3 my-3 nav-group">
+                        <li {% if material %}class="group d-flex align-items-center ps-3 py-3 my-3 nav-group selected"{% else %}class="group d-flex align-items-center ps-3 py-3 my-2 nav-group"{% endif %}>                            
                             <i class="fa-solid fa-mobile-screen fa-lg orange"></i>
                             <p class="m-0 h5 ms-3"><a href="{% url 'track_material' %}">Materials</a></p>
                         </li>
-                        <li class="group d-flex align-items-center ps-3 py-3 my-3 nav-group">
-                            <i class="fa-solid fa-people-carry-box"></i>
+                        <li {% if person %}class="group d-flex align-items-center ps-3 py-3 my-3 nav-group selected"{% else %}class="group d-flex align-items-center ps-3 py-3 my-2 nav-group"{% endif %}>                            
+                            <i class="fa-solid fa-people-carry-box green"></i>
                             <p class="m-0 h5 ms-3"><a href="{% url 'track_person' %}">Persons</a></p>
                         </li>
                     </div>
                     <li {% if analytics %}class="group d-flex align-items-center ps-3 py-3 my-3 nav-group selected"{% else %}class="group d-flex align-items-center ps-3 py-3 my-2 nav-group"{% endif %}>
                         <i class="fa-solid fa-chart-simple menthe"></i> 
                         <a class="m-0 h5 ms-3" href="{% url 'analytics' %}">Analytics</a>
-                    </li>
-                    <li class="group d-flex align-items-center ps-3 py-3 my-3 nav-group">
-                        <i class="fa-solid fa-bell"></i> <p class="m-0 h5 ms-3">Notifications</p>
                     </li>
                 </ul>
             </div>
