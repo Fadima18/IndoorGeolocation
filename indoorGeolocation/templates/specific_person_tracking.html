@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block content %}
+    <script>
+        setInterval(function(){
+            $.ajax({
+                type: "POST",
+                url: '{% url "track_specific_person" name %}',
+                data: {
+                    csrfmiddlewaretoken: "{{csrf_token}}",
+                    action: "post"
+                },
+                success: function(json){
+                    map_code = ($.parseHTML(json['map']))[0];
+                    document.querySelector('iframe').outerHTML = map_code.querySelector('iframe').outerHTML;
+                },
+                error: function(xhr, errmsg, err){}
+            })
+        }, 3000);
+    </script>
+    {{ map | safe }}
+{% endblock %}

@@ -15,11 +15,12 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from .views import map_render, track_material, track_person, view_analytics
+from .views import track_material, track_person, view_analytics, track_specific_person, track_specific_material
 
 urlpatterns = [
-    path('map', map_render, name="live_tracking"),
     path('track_material', track_material, name='track_material'),
     path('track_person', track_person, name='track_person'),
+    path('track_specific_person/<name>', track_specific_person, name='track_specific_person'),
+    path('track_specific_material', track_specific_material, name="track_specific_material"),
     path('analytics', view_analytics, name='analytics')
 ]

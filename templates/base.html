@@ -7,8 +7,7 @@
         <link href="http://fonts.cdnfonts.com/css/glacial-indifference-2" rel="stylesheet">
         <!-- CSS only -->
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" crossorigin="anonymous" referrerpolicy="no-referrer"/>
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
-        <link rel="stylesheet" href="{% static 'base.css' %}">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">        <link rel="stylesheet" href="{% static 'base.css' %}">
         {% block style %}{% endblock %}
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
         <script src="https://pagination.js.org/dist/2.1.4/pagination.min.js"></script>
@@ -24,34 +23,14 @@
                 </div>
                 <ul class="list-unstyled mt-3 px-2 nav-list">
                     <div>
-                        <li {% if tracking %}class="group d-flex align-items-center ps-3 py-3 my-3 nav-group selected"{% else %}class="group d-flex align-items-center ps-3 py-3 my-2 nav-group"{% endif %}>
-                            <i class="fa-solid fa-location-crosshairs fa-lg blue"></i>
-                            <p class="m-0 h5 ms-3"><a href="{% url 'live_tracking' %}">Live Tracking</a></p>
+                        <li class="group d-flex align-items-center ps-3 py-3 my-3 nav-group">
+                            <i class="fa-solid fa-mobile-screen fa-lg orange"></i>
+                            <p class="m-0 h5 ms-3"><a href="{% url 'track_material' %}">Materials</a></p>
                         </li>
-                        <ul>
-                            <li class="accordion-item py-2 ps-1 my-0">
-                                <div class="accordion-header d-flex devices" id="headingOne">
-                                    <button class="btn text-white" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                                        <i class="fa-solid fa-mobile-screen fa-lg orange"></i>
-                                        <span class="h5 ms-3">Materials</span>
-                                    </button>
-                                </div>
-                                <ul id="collapseOne" class="accordion-collapse collapse ps-5 list-unstyled show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
-                                    <li class="device"><a href="{% url 'track_material' %}">Device 1</a></li>
-                                </ul>
-                            </li>
-                            <li class="accordion-item py-2 ps-1 my-0">
-                                <div class="accordion-header d-flex devices" id="headingTwo">
-                                    <button class="btn text-white" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="true" aria-controls="collapseOne">
-                                        <i class="fa-solid fa-people-carry-box"></i>
-                                        <span class="h5 ms-3">Persons</span>
-                                    </button>
-                                </div>
-                                <ul id="collapseTwo" class="accordion-collapse collapse ps-5 list-unstyled show" aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
-                                    <li class="device"><a href="{% url 'track_person' %}">Mohamed Massamba Sène</a></li>
-                                </ul>
-                            </li>
-                        </ul>
+                        <li class="group d-flex align-items-center ps-3 py-3 my-3 nav-group">
+                            <i class="fa-solid fa-people-carry-box"></i>
+                            <p class="m-0 h5 ms-3"><a href="{% url 'track_person' %}">Persons</a></p>
+                        </li>
                     </div>
                     <li {% if analytics %}class="group d-flex align-items-center ps-3 py-3 my-3 nav-group selected"{% else %}class="group d-flex align-items-center ps-3 py-3 my-2 nav-group"{% endif %}>
                         <i class="fa-solid fa-chart-simple menthe"></i> 

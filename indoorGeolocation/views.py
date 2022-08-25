@@ -50,29 +50,6 @@ def create_indoor_map():
     folium.GeoJson(pavillon, style_function=style_function).add_to(indoor_map)
     return indoor_map
 
-def map_render(request):
-    coordinates = list(room_coordinates.values())
-    indoor_map = create_indoor_map()
-    
-    map_html = indoor_map._repr_html_()
-    
-    if(request.POST.get('action') == 'post'):
-        indoor_map = create_indoor_map()
-        position1 = random.choice(coordinates)
-        position2 = random.choice(coordinates)
-        new_position1 = Position(x=position1[0], y=position1[1], device_id=1)
-        new_position2 = Position(x=position2[0], y=position2[1], device_id=2)
-        new_position1.save()
-        new_position2.save()
-        folium.Marker(location=position1, marker_color='red').add_to(indoor_map)
-        folium.Marker(location=position2).add_to(indoor_map)
-        map_html = indoor_map._repr_html_()     
-        response = {'map': map_html}
-        return JsonResponse(response)
-    
-    return render(request, 'map.html', {'map': map_html, 'tracking':True})
-
-
 def track_material(request):
     coordinates = list(compartiments_coordinates.values())
     indoor_map = create_indoor_map()
@@ -86,22 +63,59 @@ def track_material(request):
     return render(request, 'material_tracking.html', {'map': map_html})
 
 def track_person(request):
+    # coordinates = list(compartiments_coordinates.values())
     coordinates = list(room_coordinates.values())
     indoor_map = create_indoor_map()
     map_html = indoor_map._repr_html_()
     
     if(request.POST.get('action') == 'post'):
-        test_person = Person.objects.get(id=2)
+        persons = list(Person.objects.all())
         indoor_map = create_indoor_map()
-        position = random.choice(coordinates)
-        new_position = Position(x=position[0], y=position[1], device_id=test_person.device.id)
-        folium.Marker(location=position).add_to(indoor_map)
+        
+        for person in persons:
+            position = random.choice(coordinates)
+            new_position = Position(x=position[0], y=position[1], device_id=person.device.id)
+            new_position.save()
+            folium.Marker(location=position, popup=(person.firstName + " " + person.lastName)).add_to(indoor_map)
+        
         map_html = indoor_map._repr_html_()
+        response = {'map': map_html}
+        return JsonResponse(response)
+
+    return render(request, 'person_tracking.html', {'map': map_html})
+
+def track_specific_person(request, name):
+    coordinates = list(compartiments_coordinates.values())
+    indoor_map = create_indoor_map()
+    map_html = indoor_map._repr_html_()
+    
+    if request.method == 'GET':
+        person = Person.objects.filter(firstName__icontains=request.GET.get('name'))[0]
+        return render(request, 'specific_person_tracking.html', {'map': map_html, 'name': person.firstName})
+        
+    if(request.POST.get('action') == 'post'):
+        person = Person.objects.filter(firstName__icontains=name)[0]
+        position = random.choice(coordinates)
+        new_position = Position(x=position[0], y=position[1], device_id=person.device.id)
         new_position.save()
+        folium.Marker(location=position, popup=(person.firstName + " " + person.lastName)).add_to(indoor_map)
+        map_html = indoor_map._repr_html_()
         response = {'map': map_html}
         return JsonResponse(response)
     
-    return render(request, 'person_tracking.html', {'map': map_html})
+def track_specific_material(request):
+    coordinates = list(compartiments_coordinates.values())
+    indoor_map = create_indoor_map()
+    map_html = indoor_map._repr_html_()
+    
+    if request.method == 'GET':
+        material = Material.objects.filter(name__icontains=request.GET.get('name'))[0]
+        related_device = material.device
+        position = Position.objects.filter(device=related_device).latest('instant')
+        location = [position.x, position.y]
+        folium.Marker(location=location, popup=(material.name)).add_to(indoor_map)
+        map_html = indoor_map._repr_html_()
+        return render(request, 'specific_object_tracking.html', {'map': map_html})
     
 def supervise_place_bis(name):
     room = room_coordinates[name]
@@ -139,20 +153,6 @@ def supervise_place_bis(name):
     
     days_data = [day_data/name_count if name_count != 0 else day_data for day_data, name_count in zip(days_data, names_count)]
     data = [datum/len(unique_dates) for datum in data]
-    
-    # Getting the average time that each customer pass in a particular room
-    # durations = [] # the list will contain all the durations of the different visits in this particular place
-    
-    # ## First :  Get all the position objects in this place
-    # positions = Position.objects.all().filter(x=room[0], y=room[1]).order_by("-instant")[1:]
-    
-    # ## Second : For each position, find the moment the corresponding device left
-    # for position in positions:
-    #     related_device = position.device
-    #     related_device_positions = Position.objects.order_by("-instant").filter(device=related_device)
-    #     for i in enumerate(related_device_positions):
-    #         if(related_device_positions[i] == )
-    #     previous_position = 
     
     return {'data': data, 'labels': labels, 'records': records, 'today_visits': today_visits, 'days_labels': days_labels, 'days_data': days_data }
 

@@ -17,9 +17,9 @@
                     <span class="display-5 fw-bold">{{today_visits}}</span> <span class="fw-bold">visits</span>
                 </div>
                 <div class="col-6 popular align-self-start mb-3 ms-5 d-flex flex-column">
-                    <p class="fw-bold m-0 mb-2">Popular places :</p>
+                    <p class="m-0 mb-2">Popular places :</p>
                     {% for place in popular_places %}
-                        <p class="fw-bold py-1 px-2 mt-1 mb-0 col-6 popular-place text-center">{{ place.1 }}</p>
+                        <div class="fw-bold py-1 px-2 mt-1 mb-0 col-6 popular-place text-center border border-dark">{{ place.1 }}</div>
                     {% endfor %}
                 </div>
             </div>

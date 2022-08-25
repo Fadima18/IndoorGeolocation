@@ -1,22 +1,33 @@
 {% extends 'base.html' %}
 {% block content %}
-    <script>
-        console.log({{ material }});
-        setInterval(function(){
-            $.ajax({
-                type: "POST",
-                url: '{% url "track_person" %}',
-                data: {
-                    csrfmiddlewaretoken: "{{csrf_token}}",
-                    action: "post"
-                },
-                success: function(json){
-                    map_code = ($.parseHTML(json['map']))[0];
-                    document.querySelector('iframe').outerHTML = map_code.querySelector('iframe').outerHTML;
-                },
-                error: function(xhr, errmsg, err){}
-            })
-        }, 3000);
-    </script>
-    {{ map | safe }}
+    <div class="container-fluid">
+        <div class="col-12 mb-3">
+            <h6 class="fw-bold">Entrez le nom de la personne que vous voulez localiser...</h6>
+            <form action="{% url 'track_specific_person' 'noone' %}" method="get" class="d-flex">
+                <input type="search" name="name" id="" class="border border-1 border-dark me-4 col-3 px-3" placeholder="Rechercher...">
+                <button type="submit" class="btn bg-dark text-white fw-bold"><i class="fa-solid fa-magnifying-glass"></i></button>
+            </form>
+        </div>
+        <div class="row">
+            <script>
+                console.log({{ material }});
+                setInterval(function(){
+                    $.ajax({
+                        type: "POST",
+                        url: '{% url "track_person" %}',
+                        data: {
+                            csrfmiddlewaretoken: "{{csrf_token}}",
+                            action: "post"
+                        },
+                        success: function(json){
+                            map_code = ($.parseHTML(json['map']))[0];
+                            document.querySelector('iframe').outerHTML = map_code.querySelector('iframe').outerHTML;
+                        },
+                        error: function(xhr, errmsg, err){}
+                    })
+                }, 3000);
+            </script>
+            {{ map | safe }}
+        </div>
+    </div>
 {% endblock %}
