@@ -1,6 +1,3 @@
-from cgi import test
-from turtle import color, position
-from venv import create
 from django.shortcuts import render
 import folium 
 import asyncio, time
