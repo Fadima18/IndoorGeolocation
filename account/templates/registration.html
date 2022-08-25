@@ -1,0 +1,29 @@
+{% extends "acc_base.html"%}
+
+{% block title %}Registration{% endblock %}
+
+
+{% block content %}
+    <div class="login d-flex align-items-center py-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-12 col-lg-10 mx-auto">
+                    <form class="compte-form p-4 rounded col-lg-10 mx-auto" action="." method="post">
+                        {% csrf_token %}
+                        <h3 class="mb-2 font-weight-bold">Create an account</h3>
+
+                        <label>{{ form.firstName.label }}<span class="text-danger small">(Requis)</span></label>{{ form.firstName }}
+                        <label>{{ form.lastName.label }}<span class="text-danger small">(Requis)</span></label>{{ form.lastName }}
+                        <label>{{ form.email.label }}<span class="text-danger small">(Requis)</span></label>{{ form.email }}
+                        <label>{{ form.password.label }}<span class="text-danger mb-4"></span></label>
+                        <small class="form-text text-danger mb-4 small">Au moins 8 caractères et 1 chiffre</small>{{ form.password }}
+                        <label>{{ form.password2.label }}<span class="text-danger small">(Requis)</span></label>{{ form.password2 }}
+
+                        <button class="btn btn-dark btn-block py-2 mb-4 mt-5 fw500 w-100"
+                            type="submit">Register</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
