@@ -39,6 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'channels',
+    'notifications_app'
 ]
 
 MIDDLEWARE = [
@@ -64,14 +66,15 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'indoorGeolocation.context_processors.names'
+                'indoorGeolocation.context_processors.names',
+                'indoorGeolocation.context_processors.notifications'
             ],
         },
     },
 ]
 
 WSGI_APPLICATION = 'Geolocation.wsgi.application'
-
+ASGI_APPLICATION = 'Geolocation.asgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
@@ -130,4 +133,13 @@ Q_CLUSTER = {
     "name": "shop",
     "orm": "default",  # Use Django's ORM + database for broker
     'workers': 8,
+}
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            'hosts': [{'127.0.0.1', 6379}],
+        },
+    },
 }
