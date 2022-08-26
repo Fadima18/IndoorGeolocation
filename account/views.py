@@ -24,7 +24,7 @@ def register(request):
             return redirect('analytics')
     else:
         registerForm = RegistrationForm()
-    return render(request, 'registration.html', {'form': registerForm})
+    return render(request, 'registration_index.html', {'form': registerForm})
 
 
 def login(request):

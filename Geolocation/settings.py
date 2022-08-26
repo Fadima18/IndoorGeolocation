@@ -39,8 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'account',
-    'channels',
+    'account'
 ]
 
 MIDDLEWARE = [
@@ -58,7 +57,7 @@ ROOT_URLCONF = 'Geolocation.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR/'templates', BASE_DIR/'indoorGeolocation'/'templates'],
+        'DIRS': [BASE_DIR/'templates', BASE_DIR/'indoorGeolocation'/'templates', BASE_DIR/'account'/'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

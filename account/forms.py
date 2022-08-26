@@ -61,8 +61,8 @@ class LoginForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['password'].widget.attrs.update(
-            {'class': 'form-control', 'placeholder': 'Password'})
+            {'class': 'form-control input100 py-4', 'placeholder': 'Password'})
         self.fields['id_in_org'].widget.attrs.update(
-            {'class': 'form-control mb-3', 'placeholder': 'ID'})
+            {'class': 'form-control mb-3 input100 py-4', 'placeholder': 'ID'})
         self.fields['email'].widget.attrs.update(
-            {'class': 'form-control mb-3', 'placeholder': 'email@email.com', 'name': 'email', 'id': 'id_email'})
+            {'class': 'form-control mb-3 input100 py-4', 'placeholder': 'Email', 'name': 'email', 'id': 'id_email'})
