@@ -1,0 +1,22 @@
+{
+    "device_id": "eui-70b3d57ed00527c0",
+    "location": {
+        "latitude": 14.794910239869978,
+        "longitude": -16.96517687828404,
+        "altitude": 69
+    },
+    "gateways": [
+        {
+            "gateway_id": "gateway5projettrans",
+            "received_rssi": -81
+        },
+        {
+            "gateway_id": "final-gateway",
+            "received_rssi": -56
+        },
+        {
+            "gateway_id": "gatewayfourprojettrans",
+            "received_rssi": -70
+        }
+    ]
+}

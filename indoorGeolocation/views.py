@@ -1,4 +1,3 @@
-from turtle import ht
 from django.shortcuts import render
 import folium 
 import asyncio, time
@@ -10,6 +9,8 @@ import datetime
 from .fetch_data import room_coordinates, compartiments_coordinates
 from .forms import RoomForm
 import threading
+import pickle
+import json, os
 
 # Create your views here.
 
@@ -58,7 +59,7 @@ def track_material(request):
     positions = list(random.sample(coordinates, len(materials)))
     
     for material, position in zip(materials, positions):
-        folium.Marker(location=position, marker_color='red', popup=material.name).add_to(indoor_map)
+        folium.Marker(location=position, marker_color='red', popup=(material.name)).add_to(indoor_map)
     map_html = indoor_map._repr_html_()
 
     return render(request, 'material_tracking.html', {'map': map_html, 'material': True})
@@ -74,10 +75,13 @@ def track_person(request):
         indoor_map = create_indoor_map()
         
         for person in persons:
-            position = random.choice(coordinates)
-            new_position = Position(x=position[0], y=position[1], device_id=person.device.id)
-            new_position.save()
-            folium.Marker(location=position, popup=(person.firstName + " " + person.lastName)).add_to(indoor_map)
+            if(person.device):
+                position = random.choice(coordinates)
+                new_position = Position(x=position[0], y=position[1], device_id=person.device.id)
+                new_position.save()
+                folium.Marker(location=position, popup=(person.firstName + " " + person.lastName)).add_to(indoor_map)
+            else:
+                pass
         
         map_html = indoor_map._repr_html_()
         response = {'map': map_html}
@@ -103,6 +107,26 @@ def track_specific_person(request, name):
         map_html = indoor_map._repr_html_()
         response = {'map': map_html, 'person': True}
         return JsonResponse(response)
+
+# def track_person(request):
+#     indoor_map = create_indoor_map()
+#     map_html = indoor_map._repr_html_()
+    
+#     if(request.POST.get('action') == 'post'):
+#         indoor_map = create_indoor_map()
+#         model_file = open('indoorGeolocation/chamodel.pkl', 'rb')
+#         model = pickle.load(model_file)
+#         number = request.POST.get('number')
+#         positions_file = open('indoorGeolocation/DemoPositions/position'+number+'.json', 'r')
+#         json_file = json.load(positions_file)
+#         rssis = np.array([gateway['received_rssi'] for gateway in json_file["gateways"]]).reshape(1, -1)
+#         position = model.predict(rssis)
+#         folium.Marker(location=position, popup="Moussa Niang").add_to(indoor_map)
+#         map_html = indoor_map._repr_html_()
+        
+#         return JsonResponse({'map': map_html, 'person': True})
+    
+    return render(request, 'person_tracking.html', {'map': map_html, 'person':True})
     
 def track_specific_material(request):
     coordinates = list(compartiments_coordinates.values())

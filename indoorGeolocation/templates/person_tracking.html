@@ -10,22 +10,27 @@
         </div>
         <div class="row">
             <script>
-                console.log({{ material }});
-                setInterval(function(){
-                    $.ajax({
-                        type: "POST",
-                        url: '{% url "track_person" %}',
-                        data: {
-                            csrfmiddlewaretoken: "{{csrf_token}}",
-                            action: "post"
-                        },
-                        success: function(json){
-                            map_code = ($.parseHTML(json['map']))[0];
-                            document.querySelector('iframe').outerHTML = map_code.querySelector('iframe').outerHTML;
-                        },
-                        error: function(xhr, errmsg, err){}
-                    })
-                }, 3000);
+                var number = 1;
+                    var Interval = setInterval(function(){
+                        $.ajax({
+                            type: "POST",
+                            url: '{% url "track_person" %}',
+                            data: {
+                                csrfmiddlewaretoken: "{{csrf_token}}",
+                                action: "post",
+                                number: number,
+                            },
+                            success: function(json){
+                                map_code = ($.parseHTML(json['map']))[0];
+                                document.querySelector('iframe').outerHTML = map_code.querySelector('iframe').outerHTML;
+                            },
+                            error: function(xhr, errmsg, err){}
+                        });
+                    number++;
+                    if(number > 7){
+                        clearInterval(Interval);
+                    }
+                    }, 3000);
             </script>
             {{ map | safe }}
         </div>

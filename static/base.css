@@ -58,8 +58,12 @@ a{
     color: #0096FF;
 }
 
-.orange{
+.gray{
     color: rgb(181, 180, 177);
+}
+
+.orange{
+    color: orange;
 }
 
 .green{
@@ -68,4 +72,8 @@ a{
 
 .menthe{
     color: #79DAE8;
+}
+
+.red{
+    color: red;
 }

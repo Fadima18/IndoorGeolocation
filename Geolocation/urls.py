@@ -18,7 +18,7 @@ from django.urls import path, include
 from .views import view_home
 
 urlpatterns = [
-    path('', view_home),
+    path('', view_home, name='home'),
     path('admin/', admin.site.urls),
     path('indoor/', include('indoorGeolocation.urls')),
     path('account/', include('account.urls'))
