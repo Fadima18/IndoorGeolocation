@@ -13,9 +13,6 @@ import pickle
 import json, os
 
 # Create your views here.
-
-# html = f"""<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Pro 6.1.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2022 Fonticons, Inc. --><path d="M208 48C208 74.51 186.5 96 160 96C133.5 96 112 74.51 112 48C112 21.49 133.5 0 160 0C186.5 0 208 21.49 208 48zM152 352V480C152 497.7 137.7 512 120 512C102.3 512 88 497.7 88 480V256.9L59.43 304.5C50.33 319.6 30.67 324.5 15.52 315.4C.3696 306.3-4.531 286.7 4.573 271.5L62.85 174.6C80.2 145.7 111.4 128 145.1 128H174.9C208.6 128 239.8 145.7 257.2 174.6L315.4 271.5C324.5 286.7 319.6 306.3 304.5 315.4C289.3 324.5 269.7 319.6 260.6 304.5L232 256.9V480C232 497.7 217.7 512 200 512C182.3 512 168 497.7 168 480V352L152 352z"/></svg>"""
-
         
 def style_function(x):
     if(x['geometry']['type'] == 'Polygon'):
@@ -64,30 +61,32 @@ def track_material(request):
 
     return render(request, 'material_tracking.html', {'map': map_html, 'material': True})
 
-# def track_person(request):
-#     # coordinates = list(compartiments_coordinates.values())
-#     coordinates = list(room_coordinates.values())
-#     indoor_map = create_indoor_map()
-#     map_html = indoor_map._repr_html_()
+def track_person(request):
+    # coordinates = list(compartiments_coordinates.values())
+    coordinates = list(room_coordinates.values())
+    indoor_map = create_indoor_map()
+    map_html = indoor_map._repr_html_()
     
-#     if(request.POST.get('action') == 'post'):
-#         persons = list(Person.objects.all())
-#         indoor_map = create_indoor_map()
+    print(type(map_html))
+    
+    if(request.POST.get('action') == 'post'):
+        persons = list(Person.objects.all())
+        indoor_map = create_indoor_map()
         
-#         for person in persons:
-#             if(person.device):
-#                 position = random.choice(coordinates)
-#                 new_position = Position(x=position[0], y=position[1], device_id=person.device.id)
-#                 new_position.save()
-#                 folium.Marker(location=position, popup=(person.firstName + " " + person.lastName)).add_to(indoor_map)
-#             else:
-#                 pass
+        for person in persons:
+            if(person.device):
+                position = random.choice(coordinates)
+                new_position = Position(x=position[0], y=position[1], device_id=person.device.id)
+                new_position.save()
+                folium.Marker(location=position, popup=(person.firstName + " " + person.lastName)).add_to(indoor_map)
+            else:
+                pass
         
-#         map_html = indoor_map._repr_html_()
-#         response = {'map': map_html}
-#         return JsonResponse(response)
+        map_html = indoor_map._repr_html_()
+        response = {'map': map_html}
+        return JsonResponse(response)
 
-#     return render(request, 'person_tracking.html', {'map': map_html, 'person': True})
+    return render(request, 'person_tracking.html', {'map': map_html, 'person': True})
 
 def track_specific_person(request, name):
     coordinates = list(compartiments_coordinates.values())
@@ -108,26 +107,26 @@ def track_specific_person(request, name):
         response = {'map': map_html, 'person': True}
         return JsonResponse(response)
 
-def track_person(request):
-    indoor_map = create_indoor_map()
-    map_html = indoor_map._repr_html_()
+# def track_person(request):
+#     indoor_map = create_indoor_map()
+#     map_html = indoor_map._repr_html_()
     
-    if(request.POST.get('action') == 'post'):
-        indoor_map = create_indoor_map()
-        model_file = open('indoorGeolocation/knrmodel.pkl', 'rb')
-        model = pickle.load(model_file)
-        number = request.POST.get('number')
-        positions_file = open('indoorGeolocation/DemoPositions/position'+number+'.json', 'r')
-        print(positions_file)
-        json_file = json.load(positions_file)
-        rssis = np.array([gateway['received_rssi'] for gateway in json_file["gateways"]]).reshape(1, -1)
-        position = list(model.predict(rssis)[0])
-        folium.Marker(location=position, popup="Moussa Niang").add_to(indoor_map)
-        map_html = indoor_map._repr_html_()
+#     if(request.POST.get('action') == 'post'):
+#         indoor_map = create_indoor_map()
+#         model_file = open('indoorGeolocation/knrmodel.pkl', 'rb')
+#         model = pickle.load(model_file)
+#         number = request.POST.get('number')
+#         positions_file = open('indoorGeolocation/DemoPositions/position'+number+'.json', 'r')
+#         print(positions_file)
+#         json_file = json.load(positions_file)
+#         rssis = np.array([gateway['received_rssi'] for gateway in json_file["gateways"]]).reshape(1, -1)
+#         position = list(model.predict(rssis)[0])
+#         folium.Marker(location=position, popup="Moussa Niang").add_to(indoor_map)
+#         map_html = indoor_map._repr_html_()
         
-        return JsonResponse({'map': map_html, 'person': True})
+#         return JsonResponse({'map': map_html, 'person': True})
     
-    return render(request, 'person_tracking.html', {'map': map_html, 'person':True})
+#     return render(request, 'person_tracking.html', {'map': map_html, 'person':True})
     
 def track_specific_material(request):
     coordinates = list(compartiments_coordinates.values())
