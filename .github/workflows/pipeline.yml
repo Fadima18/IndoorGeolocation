@@ -7,7 +7,7 @@ on:
   push:
     branches:
       -tests
-  pull:
+  pull_request:
     branches:
       -tests
 
