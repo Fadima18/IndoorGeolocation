@@ -28,12 +28,12 @@ class TestViews(TestCase):
         self.assertEquals(reponse.status_code, 200)
         self.assertTemplateUsed("indoorGeolocation/person_tracking.html")
 
-    def testSpecificMaterialTrackingShouldReturnSpecificMaterialTrackingPage(self):
-        reponse = self.client.get(self.track_specific_material_url)
+    # def testSpecificMaterialTrackingShouldReturnSpecificMaterialTrackingPage(self):
+    #     reponse = self.client.get(self.track_specific_material_url)
 
-        self.assertEquals(reponse.status_code, 200)
-        self.assertTemplateUsed(
-            "indoorGeolocation/specific_object_tracking.html")
+    #     self.assertEquals(reponse.status_code, 200)
+    #     self.assertTemplateUsed(
+    #         "indoorGeolocation/specific_object_tracking.html")
 
     def testAnalyticsShouldReturnAnalyticsPage(self):
         reponse = self.client.get(self.analytics_url)
@@ -41,12 +41,12 @@ class TestViews(TestCase):
         self.assertEquals(reponse.status_code, 200)
         self.assertTemplateUsed("indoorGeolocation/analytics.html")
 
-    def testSpecificPersonTrackingShouldReturnSpecificPersonTrackingPage(self):
-        reponse = self.client.get(self.track_specific_person_url)
+    # def testSpecificPersonTrackingShouldReturnSpecificPersonTrackingPage(self):
+    #     reponse = self.client.get(self.track_specific_person_url)
 
-        self.assertEquals(reponse.status_code, 200)
-        self.assertTemplateUsed(
-            "indoorGeolocation/specific_person_tracking.html")
+    #     self.assertEquals(reponse.status_code, 200)
+    #     self.assertTemplateUsed(
+    #         "indoorGeolocation/specific_person_tracking.html")
 
     def testViewAnalyticsContext(self):
         reponse = self.client.get(self.analytics_url)
