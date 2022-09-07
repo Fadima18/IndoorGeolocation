@@ -12,7 +12,7 @@ on:
       -tests
 
 # Travail du pipelineb (ensemble d'étapes que nous allons exécuter)
-job:
+jobs:
   build:
 
     # Le rôle du build est de spécifier un OS sur lequel nous allons exécuter ce travail
