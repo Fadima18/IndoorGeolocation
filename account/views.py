@@ -2,9 +2,10 @@ from django.shortcuts import render, redirect
 from account.models import CustomAccount
 from .forms import RegistrationForm, LoginForm
 from .utils import random_chars
+from django.views.decorators.http import require_GET
 # Create your views here.
 
-
+@require_GET
 def view_home(request):
     return render(request, 'index.html')
 
