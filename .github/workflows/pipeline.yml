@@ -36,7 +36,6 @@ jobs:
 
     - name: Coverage Report
       run:
-        coverage report
         coverage xml
 
     - name:  Quality Gate
