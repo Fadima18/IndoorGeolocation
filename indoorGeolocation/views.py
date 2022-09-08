@@ -259,6 +259,7 @@ def view_analytics(request):
 
     if request.method == 'POST':
         form = RoomForm(request.POST)
+        print(request.POST)
         if form.is_valid():
             data = form.cleaned_data
             name = data['room']
