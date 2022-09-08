@@ -1,8 +1,5 @@
-from multiprocessing import context
 from django.test import TestCase, Client
 from django.urls import reverse
-from unittest import TestCase
-import folium 
 
 class TestViews(TestCase):
     def setUp(self):
@@ -10,8 +7,8 @@ class TestViews(TestCase):
         self.track_material_url = reverse("track_material")
         self.track_person_url = reverse("track_person")
         self.analytics_url = reverse("analytics")
-        self.track_specific_material_url = reverse("track_specific_material")
-        self.track_specific_person_url = reverse("track_specific_person", args=["Massamba"])
+        self.track_specific_material_url = 'indoor/track_specific_material?name=Tv'
+        self.track_specific_person_url = "indoor/track_specific_person/noone?name=Mass"
         
     def testTrackMaterialShouldReturnTrackMaterialPage(self):
         reponse = self.client.get(self.track_material_url)
