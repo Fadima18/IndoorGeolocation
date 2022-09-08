@@ -1,6 +1,6 @@
 {% load static %}
 <!DOCTYPE html>
-<html>
+<html lang="en" xml:lang="en">
     <head>
         <title>{% block title %}{% endblock %}</title>
         <!-- Fonts -->
@@ -18,26 +18,26 @@
         <div class="container-fluid wrapper d-flex justify-content-center">
             <div class="d-flex flex-column navigation py-5 px-2 text-white my-auto ms-2">
                 <div class="head d-flex">
-                    <h1 class="brand mx-auto"><i class="fa-solid fa-map-location fa-md"></i></h1>
+                    <h1 class="brand mx-auto"><em class="fa-solid fa-map-location fa-md"></em></h1>
                     <h5 class="brand text-uppercase mt-3 fw-bold me-3">Indoor Tracking</h5>
                 </div>
                 <ul class="list-unstyled mt-3 px-2 nav-list">
                     <div>
                         <li {% if material %}class="group d-flex align-items-center ps-3 py-3 my-3 nav-group selected"{% else %}class="group d-flex align-items-center ps-3 py-3 my-2 nav-group"{% endif %}>                            
-                            <i class="fa-solid fa-mobile-screen fa-lg gray"></i>
+                            <em class="fa-solid fa-mobile-screen fa-lg gray"></em>
                             <p class="m-0 h5 ms-3"><a href="{% url 'track_material' %}">Materials</a></p>
                         </li>
                         <li {% if person %}class="group d-flex align-items-center ps-3 py-3 my-3 nav-group selected"{% else %}class="group d-flex align-items-center ps-3 py-3 my-2 nav-group"{% endif %}>                            
-                            <i class="fa-solid fa-people-carry-box orange"></i>
+                            <em class="fa-solid fa-people-carry-box orange"></em>
                             <p class="m-0 h5 ms-3"><a href="{% url 'track_person' %}">Persons</a></p>
                         </li>
                     </div>
                     <li {% if analytics %}class="group d-flex align-items-center ps-3 py-3 my-3 nav-group selected"{% else %}class="group d-flex align-items-center ps-3 py-3 my-2 nav-group"{% endif %}>
-                        <i class="fa-solid fa-chart-simple menthe"></i> 
+                        <em class="fa-solid fa-chart-simple menthe"></em> 
                         <a class="m-0 h5 ms-3" href="{% url 'analytics' %}">Analytics</a>
                     </li>
                     <li class="group d-flex align-items-center ps-3 py-3 my-2 nav-group red">
-                        <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                        <em class="fa-solid fa-arrow-right-from-bracket"></em>
                         <a class="m-0 h5 ms-3" href="{% url 'home' %}">Logout</a>
                     </li>
                 </ul>

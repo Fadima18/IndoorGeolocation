@@ -1,6 +1,6 @@
 {% load static %}
 <!DOCTYPE html>
-<html>
+<html lang="en" xml:lang="en">
     <head>
         <title>Register</title>
         <link rel="stylesheet" href="{% static 'register/register.css' %}">
@@ -14,7 +14,7 @@
             </div>
             <div class="w-50 block-2 d-flex">
                 <form method="post" class="register-form col-10 my-5 d-flex flex-column align-items-center mx-auto my-auto">
-                    <a href="{% url 'home' %}" class="text-dark align-self-start justify-self-start"><i class="fa-solid fa-angles-left fa-2x justify-self-top"></i></a>
+                    <a href="{% url 'home' %}" class="text-dark align-self-start justify-self-start"><em class="fa-solid fa-angles-left fa-2x justify-self-top"></em></a>
                     {% csrf_token %}
                     <h1 class="fw-bold mb-5">Create your account</h1>
                     <div class="form-group d-flex flex-column">

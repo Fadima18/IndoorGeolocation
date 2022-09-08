@@ -87,7 +87,6 @@ abbr[title],
 abbr[data-original-title] {
   text-decoration: underline;
   -webkit-text-decoration: underline dotted;
-          text-decoration: underline dotted;
   cursor: help;
   border-bottom: 0; }
 
@@ -7323,6 +7322,7 @@ a.text-dark:hover, a.text-dark:focus {
 
 .text-hide {
   font: 0/0 a;
+  font-family: Helvetica, Arial, Verdana, Tahoma, sans-serif;
   color: transparent;
   text-shadow: none;
   background-color: transparent;
@@ -7609,7 +7609,7 @@ body {
     font-weight: 500; }
     .features-list li:before {
       position: relative;
-      font-family: FontAwesome;
+      font-family: FontAwesome, sans-serif;
       font-size: 14px;
       content: "\f10c";
       color: #2979ff;

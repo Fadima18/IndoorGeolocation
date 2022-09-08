@@ -2,6 +2,8 @@ from django import forms
 from .models import CustomAccount
 
 
+form_cls = 'form-control mb-3'
+
 class RegistrationForm(forms.ModelForm):
 
     firstName = forms.CharField(
@@ -35,13 +37,13 @@ class RegistrationForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['firstName'].widget.attrs.update(
-            {'class': 'form-control mb-3', 'placeholder': 'Name'})
+            {'class': form_cls, 'placeholder': 'Name'})
         self.fields['lastName'].widget.attrs.update(
-            {'class': 'form-control mb-3', 'placeholder': 'Surname'})
+            {'class': form_cls, 'placeholder': 'Surname'})
         self.fields['email'].widget.attrs.update(
-            {'class': 'form-control mb-3', 'placeholder': 'email@email.com', 'name': 'email', 'id': 'id_email'})
+            {'class': form_cls, 'placeholder': 'email@email.com', 'name': 'email', 'id': 'id_email'})
         self.fields['password'].widget.attrs.update(
-            {'class': 'form-control mb-3', 'placeholder': 'Password'})
+            {'class': form_cls, 'placeholder': 'Password'})
         self.fields['password2'].widget.attrs.update(
             {'class': 'form-control', 'placeholder': 'Confirm password'})
 

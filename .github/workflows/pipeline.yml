@@ -6,33 +6,38 @@ name: Django Pipeline
 on:
   push:
     branches:
-      -tests
+      - tests
   pull_request:
     branches:
-      -tests
+      - tests
 
-# Travail du pipelineb (ensemble d'étapes que nous allons exécuter)
+# Travail du pipeline (ensemble d'étapes que nous allons exécuter)
 jobs:
   build:
-
-    # Le rôle du build est de spécifier un OS sur lequel nous allons exécuter ce travail
     runs-on: ubuntu-latest
-
     steps:
-    
-      - uses: actions/checkout@v2
-      - name: Set up Python 3.7
-        uses: actions/setup-python@v2
-        with:
-          python-version: 3.7
-      - name: Installation des dépendences
-        run:
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
-      - name: Vérification du PEP8
-        run:
-          flake8
-      - name: Rapport sur le coverage
-        run:
-          coverage run manage.py test
-          coverage report
+    - uses: actions/checkout@v2
+    - name: Set up Python 3.9
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.9
+
+    - name: Installation des dépendences
+      run:
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - name: Tests
+      run:
+        coverage run manage.py test
+
+    - name: Coverage Report
+      run:
+        coverage report
+
+    - name:  Quality Gate
+      uses: SonarSource/sonarcloud-github-action@master
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
