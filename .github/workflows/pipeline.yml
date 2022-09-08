@@ -6,9 +6,11 @@ name: Django Pipeline
 on:
   push:
     branches:
+      - master
       - tests
   pull_request:
     branches:
+      - master
       - tests
 
 # Travail du pipeline (ensemble d'étapes que nous allons exécuter)
