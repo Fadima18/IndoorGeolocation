@@ -36,7 +36,7 @@ jobs:
 
     - name: Coverage Report
       run:
-        tox
+        coverage xml
 
     - name:  Quality Gate
       uses: SonarSource/sonarcloud-github-action@master
