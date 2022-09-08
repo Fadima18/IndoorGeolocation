@@ -45,11 +45,12 @@ jobs:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
     - name: Check Quality Gate
-      uses: sonarsource/sonarcloud-quality-gate@master
+      id: sonarqube-quality-gate-check
+      uses: sonarsource/sonarqube-quality-gate-action@master
       timeout-minutes: 5
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+       SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
     - name: Dockerize
       run: |
