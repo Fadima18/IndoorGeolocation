@@ -19,6 +19,15 @@ class TestViews(TestCase):
         )
 
     def testTrackMaterialShouldReturnTrackMaterialPage(self):
+        Material.objects.create(
+            device = self.device,
+            name = "Test"
+        )
+        Position.objects.create(
+            device = self.device,
+            x=14.795036483073138,
+            y=-16.9649700075388
+        )
         reponse = self.client.get(self.track_material_url)
 
         self.assertEquals(reponse.status_code, 200)
