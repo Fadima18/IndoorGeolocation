@@ -31,7 +31,12 @@ jobs:
         pip install -r requirements.txt
 
     - name: Tests
-      run: tox -e py
+      run:
+        coverage run manage.py test
+
+    - name: Coverage Report
+      run:
+        coverage report
 
     - name:  Quality Gate
       uses: SonarSource/sonarcloud-github-action@master
