@@ -18,7 +18,7 @@ on:
 
 # Travail du pipeline (ensemble d'étapes que nous allons exécuter)
 jobs:
-  CI/CD Pipeline:
+  pipeline:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
