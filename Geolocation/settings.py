@@ -15,7 +15,7 @@ import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
+PASSWORD = "postgres"
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
@@ -83,7 +83,7 @@ if os.getenv('GITHUB_WORKFLOW'):
             'ENGINE': 'django.db.backends.postgresql',
             'NAME': 'github-actions',
             'USER': 'postgres',
-            'PASSWORD': 'postgres',
+            'PASSWORD': PASSWORD,
             'HOST': 'localhost',
             'PORT': '5432'
         }
