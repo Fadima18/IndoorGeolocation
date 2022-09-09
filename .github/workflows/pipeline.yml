@@ -9,16 +9,17 @@ on:
     branches:
       - master
       - tests
+      - Deploy
   pull_request:
     branches:
       - master
       - tests
+      - Deploy
 
 # Travail du pipeline (ensemble d'étapes que nous allons exécuter)
 jobs:
-  build:
+  testing:
     runs-on: ubuntu-latest
-
     steps:
     - uses: actions/checkout@v2
     - name: Set up Python 3.9
@@ -52,10 +53,24 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-
-    - name: Dockerize
-      run: |
-        docker login -u=${{secrets.DOCKER_USERNAME }} -p=${{ secrets.DOCKER_PASSWORD }}
-        docker build -t ${{secrets.DOCKER_REGISTRY_IMAGE }}:${{ github.sha }} -t  ${{secrets.DOCKER_REGISTRY_IMAGE }}:latest .        # docker build -t image:tag_1 -t image:tag_2 .... -t image:tage_n .
-        docker push ${{secrets.DOCKER_REGISTRY_IMAGE }}:latest # only push latest tag
-
+        
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Dockerize
+        run: |
+          docker login -u=${{secrets.DOCKER_USERNAME }} -p=${{ secrets.DOCKER_PASSWORD }}
+          docker build -t ${{secrets.DOCKER_REGISTRY_IMAGE }}:${{ github.sha }} -t  ${{secrets.DOCKER_REGISTRY_IMAGE }}:latest .        # docker build -t image:tag_1 -t image:tag_2 .... -t image:tage_n .
+          docker push ${{secrets.DOCKER_REGISTRY_IMAGE }}:latest # only push latest tag
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Deployment
+        uses: akhileshns/heroku-deploy@v3.12.12 # This is the action
+        with:
+            heroku_api_key: ${{secrets.HEROKU_API_KEY}}
+            heroku_app_name: ${{secrets.HEROKU_APP_NAME}} #Must be unique in Heroku
+            heroku_email: ${{secrets.HEROKU_EMAIL}} #Heroku app name
+            usedocker: true
