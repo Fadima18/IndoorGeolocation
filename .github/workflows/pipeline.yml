@@ -155,4 +155,13 @@ jobs:
           docker tag ${{secrets.DOCKER_REGISTRY_IMAGE}} registry.heroku.com/${{steps.app_name.outputs.heroku_app_name}}/web
           docker push registry.heroku.com/${{steps.app_name.outputs.heroku_app_name}}/web
           heroku container:release web -a ${{steps.app_name.outputs.heroku_app_name}}
-
+      - name : Test deploy
+        id: test-deploy
+        uses: indiesdev/curl@v1.1
+        with:
+            url: https://${{steps.app_name.outputs.heroku_app_name}}.herokuapp.com
+            method: "GET"
+            accept: 200
+            timeout: 5000
+            log-response: true
+            retries: 2
