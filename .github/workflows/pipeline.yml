@@ -72,12 +72,7 @@ jobs:
     - name: Some check on branch
       id: branch_check
       run: |
-        echo "Running on branch ${{ github.ref }}"
-        if [ "${{ github.ref }}" != "refs/heads/tests" ]; then
-          echo "::set-output name=env_name::production"
-        else
-          echo "::set-output name=env_name::test"
-        fi   
+        echo "::set-output name=env_name::tests"
     - name: Use variable setup in previous step
       run: echo "Environement ${{ steps.branch_check.outputs.env_name }}"
     # - name: Deploy to dev
@@ -108,12 +103,7 @@ jobs:
     - name: Some check on branch
       id: branch_check
       run: |
-        echo "Running on branch ${{ github.ref }}"
-        if [ "${{ github.ref }}" != "refs/heads/tests" ]; then
-          echo "::set-output name=env_name::production"
-        else
-          echo "::set-output name=env_name::test"
-        fi  
+        echo "::set-output name=env_name::production"
     - name: Use variable setup in previous step
       run: echo "Environement ${{ steps.branch_check.outputs.env_name }}"
     # - name: Deploy
