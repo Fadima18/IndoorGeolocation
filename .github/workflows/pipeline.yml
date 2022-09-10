@@ -1,22 +1,17 @@
-# Nom du workflow
-# Moussa
-
 name: Django Pipeline
 
-# Définir les actions pour lesquels on appelle le workflow
 on:
   push:
     branches:
       - master
-      - tests
+      - release
       - Deploy
   pull_request:
     branches:
       - master
-      - tests
+      - release
       - Deploy
 
-# Travail du pipeline (ensemble d'étapes que nous allons exécuter)
 jobs:
 
   dependencies-check:
