@@ -90,8 +90,8 @@ jobs:
 
   deploy:
     runs-on: ubuntu-latest
-    environment: ${{ branch-check.steps.branch_check.outputs.env_name }}
     needs: branch-check
+    environment: ${{ needs.branch-check.steps.branch_check.outputs.env_name }}
     steps:
       - uses: actions/checkout@v2
       - name: Deploy 
