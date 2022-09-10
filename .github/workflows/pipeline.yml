@@ -96,7 +96,7 @@ jobs:
       - uses: actions/checkout@v2
       - name: Deploy 
         run : |
-          echo "Deployed to ${{ steps.branch_check.outputs.env_name }}"
+          echo "Deployed to ${{ needs.branch-check.steps.branch_check.outputs.env_name }}"
 
 
   
