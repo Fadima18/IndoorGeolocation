@@ -164,6 +164,6 @@ jobs:
             url: https://${{steps.app_name.outputs.heroku_app_name}}.herokuapp.com
             method: "GET"
             accept: 200
-            timeout: 5000
+            timeout: 10000
             log-response: true
             retries: 2
