@@ -133,6 +133,11 @@ jobs:
       name: ${{ needs.branch-check.outputs.env_name }}
     steps:
       - uses: actions/checkout@v2
+      - name: Dockerize
+        run: |
+          docker login -u=${{secrets.DOCKER_USERNAME }} -p=${{ secrets.DOCKER_PASSWORD }}
+          docker build -t ${{secrets.DOCKER_REGISTRY_IMAGE }}:${{ github.sha }} -t  ${{secrets.DOCKER_REGISTRY_IMAGE }}:latest .
+          docker push ${{secrets.DOCKER_REGISTRY_IMAGE }}:latest # only push latest tag
       - name: Login to Heroku
         uses: akhileshns/heroku-deploy@v3.12.12
         with:
