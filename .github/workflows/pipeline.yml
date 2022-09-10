@@ -58,7 +58,8 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Package
-      run:
+      run:  |
+        pip install build
         python -m build 
 
   release:
