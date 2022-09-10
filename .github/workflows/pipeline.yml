@@ -145,10 +145,19 @@ jobs:
           heroku_app_name: ${{secrets.HEROKU_APP_NAME}}
           heroku_email: ${{secrets.HEROKU_EMAIL}}
           justlogin: true,
-      - name: Deploy
+      - name: Find app name
+        id: app_name
         run : |
+          if [ "${{ needs.branch-check.outputs.env_name }}" = "development" ]; then
+          echo "::set-output name=heroku_app_name::"${{ secrets.HEROKU_APP_NAME_DEV }}""
+          else
+              echo "::set-output name=heroku_app_name::"{{ secrets.HEROKU_APP_NAME_PROD }}""
+          fi
+      - name: Deploy
+        run:  |
           echo "Deploying to ${{ needs.branch-check.outputs.env_name }}"
           docker login --username=_ --password=${{secrets.HEROKU_API_KEY}} registry.heroku.com
-          docker tag ${{secrets.DOCKER_REGISTRY_IMAGE}} registry.heroku.com/${{secrets.HEROKU_APP_NAME}}/web
-          docker push registry.heroku.com/${{secrets.HEROKU_APP_NAME}}/web
-          heroku container:release web -a ${{secrets.HEROKU_APP_NAME}}
+          docker tag ${{secrets.DOCKER_REGISTRY_IMAGE}} registry.heroku.com/${{steps.app_name.outputs.heroku_app_name}}/web
+          docker push registry.heroku.com/${{steps.app_name.outputs.heroku_app_name}}/web
+          heroku container:release web -a ${{steps.app_name.outputs.heroku_app_name}}
+
