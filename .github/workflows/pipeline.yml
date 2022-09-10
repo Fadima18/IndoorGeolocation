@@ -19,38 +19,38 @@ on:
 # Travail du pipeline (ensemble d'étapes que nous allons exécuter)
 jobs:
 
-  # dependencies-check-to-quality-gate-check:
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #   - uses: actions/checkout@v2
-  #   - name: Set up Python 3.9
-  #     uses: actions/setup-python@v2
-  #     with:
-  #       python-version: 3.9
+  dependencies-check-to-quality-gate-check:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python 3.9
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.9
 
-  #   - name: Installation des dépendences
-  #     run:
-  #       python -m pip install --upgrade pip
-  #       pip install -r requirements.txt
+    - name: Installation des dépendences
+      run:
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
 
-  #   - name: Tests
-  #     run:
-  #       coverage run manage.py test
-  #   - name: Coverage Report
-  #     run:
-  #       coverage xml
-  #   - name:  Quality Gate
-  #     uses: SonarSource/sonarcloud-github-action@master
-  #     env:
-  #       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  #       SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-  #   - name: Check Quality Gate
-  #     id: sonarqube-quality-gate-check
-  #     uses: sonarsource/sonarqube-quality-gate-action@master
-  #     timeout-minutes: 5
-  #     env:
-  #       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  #       SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+    - name: Tests
+      run:
+        coverage run manage.py test
+    - name: Coverage Report
+      run:
+        coverage xml
+    - name:  Quality Gate
+      uses: SonarSource/sonarcloud-github-action@master
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+    - name: Check Quality Gate
+      id: sonarqube-quality-gate-check
+      uses: sonarsource/sonarqube-quality-gate-action@master
+      timeout-minutes: 5
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
   package:
     runs-on: ubuntu-latest
