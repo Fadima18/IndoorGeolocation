@@ -93,10 +93,10 @@ jobs:
     needs: branch-check
     environment: ${{ steps.branch_check.outputs.env_name }}
     steps:
-    - uses: actions/checkout@v2
-    - name: Deploy 
-      run : |
-        echo "Deployed to ${{ steps.branch_check.outputs.env_name }}"
+      - uses: actions/checkout@v2
+      - name: Deploy 
+        run : |
+          echo "Deployed to ${{ steps.branch_check.outputs.env_name }}"
 
 
   
