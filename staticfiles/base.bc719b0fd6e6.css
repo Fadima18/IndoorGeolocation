@@ -1,0 +1,79 @@
+body{
+    font-family: 'Albert Sans', 'Glacial Indifference', 'American Typewriter', 'sans-serif';
+}
+
+a{
+    text-decoration: none;
+    color: white !important;
+}
+
+.wrapper{
+    height: 100vh;
+    padding: 0px;
+}
+
+.navigation{
+    background-color: rgba(17, 19, 19);
+    height: 96%;
+    width: 17%;
+    border-radius: 20px;
+}
+
+.map-container{
+    width: 80%;
+    height: 100%;
+}
+
+.selected{
+    background-color: rgb(10, 66, 251);
+    border-radius: 17px;
+    color: white !important;
+}
+
+.selected i{
+    color: white;
+}
+
+.selected a{
+    color: white !important;
+}
+
+.line{
+    height: 2px;
+    width: 50%;
+    background-color: rgb(10, 66, 251);
+}
+
+.place{
+    background-color: rgba(10, 66, 251);
+    border-radius: 5px;
+    color: white !important;
+}
+
+.place a{
+    color: white;
+}
+
+.blue{
+    color: #0096FF;
+}
+
+.gray{
+    color: rgb(181, 180, 177);
+}
+
+.orange{
+    color: orange;
+}
+
+.green{
+    color: #1bbb4e;
+}
+
+.menthe{
+    color: #79DAE8;
+}
+
+.red{
+    color: red;
+}

@@ -1,0 +1,54 @@
+table{
+    border: solid 3px;
+}
+
+td{
+    border: solid 3px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 25px;
+    padding-right: 25px;
+}
+
+th{
+    border: solid 3px black;
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-left: 25px;
+    padding-right: 25px;
+    background-color: rgb(10, 66, 251);
+    color: white;
+}
+
+#pagination ul li{
+    display: inline;
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    border: solid 2px;
+    border-right: 0px;
+}
+
+#pagination ul li:first-child{
+    border: 0px;
+}
+
+#pagination ul li:last-child{
+    border: 0px;
+}
+
+#pagination ul li a{
+    color: black !important;
+}
+
+.visits{
+/* From https://css.glass */
+background: rgba(91, 167, 197, 0.2);
+border-radius: 16px;
+box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+backdrop-filter: blur(5px);
+-webkit-backdrop-filter: blur(5px);
+border: 1px solid rgba(91, 167, 197, 0.34);
+}
+  
