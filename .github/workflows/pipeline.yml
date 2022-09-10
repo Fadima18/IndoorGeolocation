@@ -122,6 +122,7 @@ jobs:
 
     outputs:
       env_name: ${{ steps.branch_check.outputs.env_name }}
+      
 
   deploy:
     runs-on: ubuntu-latest
