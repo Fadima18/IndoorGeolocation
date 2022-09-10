@@ -143,12 +143,12 @@ jobs:
           heroku_app_name: ${{secrets.HEROKU_APP_NAME}}
           heroku_email: ${{secrets.HEROKU_EMAIL}}
           justlogin: true,
-    - name: Deploy 
-      run : |
-        docker login --username=_ --password=${{secrets.HEROKU_API_KEY}} registry.heroku.com
-        docker tag ${{secrets.DOCKER_REGISTRY_IMAGE}} registry.heroku.com/${{secrets.HEROKU_APP_NAME}}/web
-        docker push registry.heroku.com/${{secrets.HEROKU_APP_NAME}}/web
-        heroku container:release web -a ${{secrets.HEROKU_APP_NAME}}
+      - name: Deploy 
+        run : |
+          docker login --username=_ --password=${{secrets.HEROKU_API_KEY}} registry.heroku.com
+          docker tag ${{secrets.DOCKER_REGISTRY_IMAGE}} registry.heroku.com/${{secrets.HEROKU_APP_NAME}}/web
+          docker push registry.heroku.com/${{secrets.HEROKU_APP_NAME}}/web
+          heroku container:release web -a ${{secrets.HEROKU_APP_NAME}}
 
 
   
