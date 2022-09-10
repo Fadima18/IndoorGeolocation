@@ -113,9 +113,9 @@ jobs:
       run: |
         echo "Running on branch ${{ github.ref }}"
         if [ "${{ github.ref }}" = "refs/heads/release" ]; then
-          echo "::set-output name=env_name::production"
+          echo "::set-output name=env_name::prod"
         else
-            echo "::set-output name=env_name::development"
+            echo "::set-output name=env_name::dev"
         fi
     - name: Use variable setup in previous step
       run: echo "I'm using variable ${{ steps.branch_check.outputs.env_name }}"
