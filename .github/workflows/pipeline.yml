@@ -86,7 +86,7 @@ jobs:
             echo "::set-output name=env_name::development"
         fi
     - name: Deploy
-      environment: ${{ steps.branch_check.outputs.env_name }}
+      env: ${{ steps.branch_check.outputs.env_name }}
       run:  echo "I'm using variable ${{ steps.branch_check.outputs.env_name }}"
 
     # - name: Deploy to dev
