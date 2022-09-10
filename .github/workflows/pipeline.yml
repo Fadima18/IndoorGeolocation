@@ -77,14 +77,14 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Set environment for branch
+      id: branch_check
       run: |
-        run: |
-          echo "Running on branch ${{ github.ref }}"
-          if [ "${{ github.ref }}" = "refs/heads/tests" ]; then
-            echo "::set-output name=env_name::production"
-          else
-             echo "::set-output name=env_name::test"
-          fi         
+        echo "Running on branch ${{ github.ref }}"
+        if [ "${{ github.ref }}" = "refs/heads/tests" ]; then
+          echo "::set-output name=env_name::production"
+        else
+            echo "::set-output name=env_name::development"
+        fi         
     - name: Use variable setup in previous step
       run: echo "I'm using variable ${{ steps.branch_check.outputs.env_name }}"
     # - name: Deploy to dev
