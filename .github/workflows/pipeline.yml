@@ -84,9 +84,11 @@ jobs:
           echo "::set-output name=env_name::production"
         else
             echo "::set-output name=env_name::development"
-        fi         
-    - name: Use variable setup in previous step
-      run: echo "I'm using variable ${{ steps.branch_check.outputs.env_name }}"
+        fi
+    - name: Deploy
+      environment: ${{ steps.branch_check.outputs.env_name }}
+      run:  echo "I'm using variable ${{ steps.branch_check.outputs.env_name }}"
+
     # - name: Deploy to dev
     #   uses: appleboy/ssh-action@master
     #   with:
