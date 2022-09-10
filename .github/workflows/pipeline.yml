@@ -88,7 +88,7 @@ jobs:
       run: echo "I'm using variable ${{ steps.branch_check.outputs.env_name }}"
 
   outputs:
-      env_name: ${{ steps.branch_check.outputs.env_name }}
+    env_name: ${{ steps.branch_check.outputs.env_name }}
 
   deploy:
     runs-on: ubuntu-latest
