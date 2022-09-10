@@ -62,8 +62,8 @@ jobs:
         docker login -u=${{secrets.DOCKER_USERNAME }} -p=${{ secrets.DOCKER_PASSWORD }}
         docker build -t ${{secrets.DOCKER_REGISTRY_IMAGE }}:${{ github.sha }} -t  ${{secrets.DOCKER_REGISTRY_IMAGE }}:latest .
         docker push ${{secrets.DOCKER_REGISTRY_IMAGE }}:latest # only push latest tag
-
-  deploy-to-dev:
+  
+   deploy-to-dev:
     runs-on: ubuntu-latest
     needs: release
     if: ${{ github.ref }} != "refs/heads/tests"
@@ -72,13 +72,12 @@ jobs:
     - name: Some check on branch
       id: branch_check
       run: |
-        run: |
-          echo "Running on branch ${{ github.ref }}"
-          if [ "${{ github.ref }}" != "refs/heads/tests" ]; then
-            echo "::set-output name=env_name::production"
-          else
-            echo "::set-output name=env_name::test"
-          fi   
+        echo "Running on branch ${{ github.ref }}"
+        if [ "${{ github.ref }}" != "refs/heads/tests" ]; then
+          echo "::set-output name=env_name::production"
+        else
+          echo "::set-output name=env_name::test"
+        fi   
     - name: Use variable setup in previous step
       run: echo "Environement ${{ steps.branch_check.outputs.env_name }}"
     # - name: Deploy to dev
@@ -110,9 +109,11 @@ jobs:
       id: branch_check
       run: |
         echo "Running on branch ${{ github.ref }}"
-        if [ "${{ github.ref }}" = "refs/heads/master" ]; then
+        if [ "${{ github.ref }}" != "refs/heads/tests" ]; then
           echo "::set-output name=env_name::production"
-	fi   
+        else
+          echo "::set-output name=env_name::test"
+        fi  
     - name: Use variable setup in previous step
       run: echo "Environement ${{ steps.branch_check.outputs.env_name }}"
     # - name: Deploy
@@ -131,5 +132,3 @@ jobs:
     #       docker --version # just to test installation
     #       # sudo docker container ls -aq --filter name=${{ secrets.DOCKER_REGISTRY_IMAGE }} |xargs --no-run-if-empty sudo docker stop |xargs --no-run-if-empty sudo docker container rm 
     #       # sudo docker run --name cicdeptgitdic1  -d -p 8000:8000 ${{secrets.DOCKER_REGISTRY_IMAGE}}:latest
-    
-
