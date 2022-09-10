@@ -143,7 +143,7 @@ jobs:
       - name: Find app name
         id: app_name
         run : |
-          if [ "${{ needs.branch-check.outputs.env_name }}" = "development" ]; then
+          if [ "${{ needs.branch-check.outputs.env_name }}" = "dev" ]; then
             echo "::set-output name=heroku_app_name::"${{ secrets.HEROKU_APP_NAME_DEV }}""
           else
             echo "::set-output name=heroku_app_name::"${{ secrets.HEROKU_APP_NAME_PROD }}""
