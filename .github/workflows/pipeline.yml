@@ -67,12 +67,13 @@ jobs:
     runs-on: ubuntu-latest
     needs: release
     if: ${{ github.ref }} != "refs/heads/tests"
+    environment: development
     steps:
     - uses: actions/checkout@v2
-    - name: Some check on branch
+    - name: Check branch
       id: branch_check
       run: |
-        echo "::set-output name=env_name::tests"
+        echo "::set-output name=env_name::development"
     - name: Use variable setup in previous step
       run: echo "Environement ${{ steps.branch_check.outputs.env_name }}"
     # - name: Deploy to dev
@@ -100,7 +101,7 @@ jobs:
     environment: production
     steps:
     - uses: actions/checkout@v2
-    - name: Some check on branch
+    - name: Check Branch
       id: branch_check
       run: |
         echo "::set-output name=env_name::production"
