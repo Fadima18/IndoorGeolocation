@@ -71,19 +71,22 @@ jobs:
         docker build -t ${{secrets.DOCKER_REGISTRY_IMAGE }}:${{ github.sha }} -t  ${{secrets.DOCKER_REGISTRY_IMAGE }}:latest .
         docker push ${{secrets.DOCKER_REGISTRY_IMAGE }}:latest # only push latest tag
   
-  deploy-to-dev:
+  deploy:
     runs-on: ubuntu-latest
     needs: release
-    if: ${{ github.ref }} != "refs/heads/tests"
-    environment: development
     steps:
     - uses: actions/checkout@v2
-    - name: Check branch
-      id: branch_check
+    - name: Set environment for branch
       run: |
-        echo "::set-output name=env_name::development"
+        run: |
+          echo "Running on branch ${{ github.ref }}"
+          if [ "${{ github.ref }}" = "refs/heads/tests" ]; then
+            echo "::set-output name=env_name::production"
+          else
+             echo "::set-output name=env_name::test"
+          fi         
     - name: Use variable setup in previous step
-      run: echo "Environement ${{ steps.branch_check.outputs.env_name }}"
+      run: echo "I'm using variable ${{ steps.branch_check.outputs.env_name }}"
     # - name: Deploy to dev
     #   uses: appleboy/ssh-action@master
     #   with:
@@ -102,32 +105,4 @@ jobs:
     #       # sudo docker run --name cicdeptgitdic1  -d -p 8000:8000 ${{secrets.DOCKER_REGISTRY_IMAGE}}:latest
 
 
-  deploy-to-prod:
-    runs-on: ubuntu-latest
-    needs: release
-    if: ${{ github.ref }} = "refs/heads/tests"
-    environment: production
-    steps:
-    - uses: actions/checkout@v2
-    - name: Check Branch
-      id: branch_check
-      run: |
-        echo "::set-output name=env_name::production"
-    - name: Use variable setup in previous step
-      run: echo "Environement ${{ steps.branch_check.outputs.env_name }}"
-    # - name: Deploy
-    #   uses: appleboy/ssh-action@master
-    #   with:
-    #     host: ${{ secrets.WEB_SERVER_IP }}
-    #     username: ${{ secrets.WEB_SERVER_USERNAME }}
-    #     key: ${{ secrets.WEB_SERVER_KEY }}
-    #     port: 22
-    #     script: | #script to execute once inside the remote computer
-    #       mkdir -p ~/.ssh
-    #       touch  ~/.ssh/known_host
-    #       ssh-keyscan -H ${{ secrets.WEB_SERVER_IP }} >> ~/.ssh/known_hosts
-    #       sudo sudo apt-get update
-    #       sudo apt install docker.io
-    #       docker --version # just to test installation
-    #       # sudo docker container ls -aq --filter name=${{ secrets.DOCKER_REGISTRY_IMAGE }} |xargs --no-run-if-empty sudo docker stop |xargs --no-run-if-empty sudo docker container rm 
-    #       # sudo docker run --name cicdeptgitdic1  -d -p 8000:8000 ${{secrets.DOCKER_REGISTRY_IMAGE}}:latest
+  
