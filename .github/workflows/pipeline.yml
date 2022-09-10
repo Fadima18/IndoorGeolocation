@@ -110,7 +110,7 @@ jobs:
       id: branch_check
       run: |
         echo "Running on branch ${{ github.ref }}"
-        if [ "${{ github.ref }}" = "refs/heads/tests" ]; then
+        if [ "${{ github.ref }}" = "refs/heads/release" ]; then
           echo "::set-output name=env_name::production"
         else
             echo "::set-output name=env_name::development"
