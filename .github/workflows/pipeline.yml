@@ -16,13 +16,6 @@ on:
       - tests
       - Deploy
 
-env:
-  AZURE_WEBAPP_NAME: myproduction
-  CONTAINER_REGISTRY: ${{ secrets.REGISTRY_URL }}
-  AZURE_RESOURCE_GROUP: rg-django
-  AZURE_APP_PLAN: myproduction-asp
-  WEBHOOK_NAME: whookmyproduction
-
 # Travail du pipeline (ensemble d'étapes que nous allons exécuter)
 jobs:
 
@@ -47,7 +40,7 @@ jobs:
       run:
         coverage xml
 
-  quality:
+  quality-and-check-quality-gate:
     runs-on: ubuntu-latest
     needs: dependencies-check-and-tests
     steps:
@@ -57,23 +50,17 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-
-  quality-gate-check:
-    runs-on: ubuntu-latest
-    needs: quality
-    steps:
-      - uses: sonarsource/sonarqube-quality-gate-action@master
-      - name: Check Quality Gate
-        id: sonarqube-quality-gate-check
-        uses: sonarsource/sonarqube-quality-gate-action@master
-        timeout-minutes: 5
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+    - name: Check Quality Gate
+      id: sonarqube-quality-gate-check
+      uses: sonarsource/sonarqube-quality-gate-action@master
+      timeout-minutes: 5
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
   release:
     runs-on: ubuntu-latest
-    needs: quality-gate-check
+    needs: quality-and-check-quality-gate
     steps:
     - uses: actions/checkout@v2
     - name: Dockerize
