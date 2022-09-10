@@ -49,6 +49,12 @@ jobs:
     needs: tests
     steps:
     - uses: actions/checkout@v2
+    - name: Tests
+      run:  |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        coverage run manage.py test
+        coverage xml
     - name:  Quality Gate
       uses: SonarSource/sonarcloud-github-action@master
       env:
@@ -60,6 +66,12 @@ jobs:
     needs: quality
     steps:
     - uses: actions/checkout@v2
+    - name: Tests
+      run:  |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        coverage run manage.py test
+        coverage xml
     - name:  Quality Gate
       uses: SonarSource/sonarcloud-github-action@master
       env:
