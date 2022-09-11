@@ -168,4 +168,14 @@ jobs:
           timeout: 300000
           log-response: true
           retries: 2
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Discord notification
+      env:
+        DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+      uses: Ilshidur/action-discord@master
+      with:
+        args: 'The project {{ EVENT_PAYLOAD.repository.full_name }} has been deployed.'
 
