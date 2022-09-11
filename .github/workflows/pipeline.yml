@@ -160,7 +160,7 @@ jobs:
         heroku container:release web -a ${{steps.app_name.outputs.heroku_app_name}}
     
     outputs:
-    heroku_app_name: ${{ steps.app_name.outputs.heroku_app_name }}
+      heroku_app_name: ${{ steps.app_name.outputs.heroku_app_name }}
 
   test-deploy:
     runs-on: ubuntu-latest
