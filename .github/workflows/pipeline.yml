@@ -68,6 +68,7 @@ jobs:
     - name: Push Docker
       run: |
         cd path/to/docker-artifacts
+        docker login -u=${{secrets.DOCKER_USERNAME }} -p=${{ secrets.DOCKER_PASSWORD }}
         docker load < docker-image.tar
         docker push ${{secrets.DOCKER_REGISTRY_IMAGE }}:latest
     - name: Login to Heroku
@@ -115,6 +116,7 @@ jobs:
     - name: Push Docker
       run: |
         cd path/to/docker-artifacts
+        docker login -u=${{secrets.DOCKER_USERNAME }} -p=${{ secrets.DOCKER_PASSWORD }}
         docker load < docker-image.tar
         docker push ${{secrets.DOCKER_REGISTRY_IMAGE }}:latest
     - name: Login to Heroku
