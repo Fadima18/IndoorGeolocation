@@ -42,7 +42,7 @@ jobs:
     - uses: actions/upload-artifact@master
       with:
         name: coverage
-        path: coverage.xml
+        path: output/test/code-coverage.xml
         
   quality:
     runs-on: ubuntu-latest
@@ -52,7 +52,7 @@ jobs:
     - uses: actions/download-artifact@master
       with:
         name: coverage
-        path: coverage.xml
+        path: output/test/code-coverage.xml
     - name:  Quality Gate
       uses: SonarSource/sonarcloud-github-action@master
       env:
