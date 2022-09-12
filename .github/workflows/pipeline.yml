@@ -55,6 +55,7 @@ jobs:
       with:
         name: coverage
         path: path/to/artifact
+    - run: mv path/to/artifact/coverage.xml coverage.xml
     - name:  Quality Gate
       uses: SonarSource/sonarcloud-github-action@master
       env:
