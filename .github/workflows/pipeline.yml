@@ -122,11 +122,12 @@ jobs:
       env_name: ${{ steps.branch_check.outputs.env_name }}
 
 
-  deploy:
+  deploy-dev:
+    if: ${{ needs.branch-check.outputs.env_name }} == 'dev'
     runs-on: ubuntu-latest
     needs: [branch-check]
     environment:
-      name: ${{ needs.branch-check.outputs.env_name }}
+      name: dev
     steps:
     - uses: actions/checkout@v2
     - name: Dockerize
@@ -144,12 +145,8 @@ jobs:
     - name: Find app name
       id: app_name
       run : |
-        if [ "${{ needs.branch-check.outputs.env_name }}" = "dev" ]; then
           echo "::set-output name=heroku_app_name::"${{ secrets.HEROKU_APP_NAME_DEV }}""
-        else
-          echo "::set-output name=heroku_app_name::"${{ secrets.HEROKU_APP_NAME_PROD }}""
-        fi
-    - name: Deploy
+    - name: Deploying
       run:  |
         echo "Deploying to ${{ needs.branch-check.outputs.env_name }}"
         docker login --username=_ --password=${{secrets.HEROKU_API_KEY}} registry.heroku.com
@@ -166,14 +163,57 @@ jobs:
           timeout: 300000
           log-response: true
           retries: 2
-  notify:
+  
+  deploy-prod:
+    if: ${{ needs.branch-check.outputs.env_name }} == 'prod'
     runs-on: ubuntu-latest
-    needs: deploy
+    needs: [branch-check]
+    environment:
+      name: prod
     steps:
     - uses: actions/checkout@v2
-    - name: Discord notification
-      env:
-        DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
-      uses: Ilshidur/action-discord@master
+    - name: Dockerize
+      run: |
+        docker login -u=${{secrets.DOCKER_USERNAME }} -p=${{ secrets.DOCKER_PASSWORD }}
+        docker build -t ${{secrets.DOCKER_REGISTRY_IMAGE }}:${{ github.sha }} -t  ${{secrets.DOCKER_REGISTRY_IMAGE }}:latest .
+        docker push ${{secrets.DOCKER_REGISTRY_IMAGE }}:latest # only push latest tag
+    - name: Login to Heroku
+      uses: akhileshns/heroku-deploy@v3.12.12
       with:
-        args: 'The project {{ EVENT_PAYLOAD.repository.full_name }} has been deployed.'
+        heroku_api_key: ${{secrets.HEROKU_API_KEY}}
+        heroku_app_name: ${{secrets.HEROKU_APP_NAME}}
+        heroku_email: ${{secrets.HEROKU_EMAIL}}
+        justlogin: true,
+    - name: Find app name
+      id: app_name
+      run : |
+          echo "::set-output name=heroku_app_name::"${{ secrets.HEROKU_APP_NAME_PROD }}""
+    - name: Deploying
+      run:  |
+        echo "Deploying to ${{ needs.branch-check.outputs.env_name }}"
+        docker login --username=_ --password=${{secrets.HEROKU_API_KEY}} registry.heroku.com
+        docker tag ${{secrets.DOCKER_REGISTRY_IMAGE}} registry.heroku.com/${{steps.app_name.outputs.heroku_app_name}}/web
+        docker push registry.heroku.com/${{steps.app_name.outputs.heroku_app_name}}/web
+        heroku container:release web -a ${{steps.app_name.outputs.heroku_app_name}}
+    - name : Test deploy
+      id: test-deploy
+      uses: indiesdev/curl@v1.1
+      with:
+          url: https://${{steps.app_name.outputs.heroku_app_name}}.herokuapp.com
+          method: "GET"
+          accept: 200
+          timeout: 300000
+          log-response: true
+          retries: 2
+    
+#   notify:
+#     runs-on: ubuntu-latest
+#     needs: deploy
+#     steps:
+#     - uses: actions/checkout@v2
+#     - name: Discord notification
+#       env:
+#         DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+#       uses: Ilshidur/action-discord@master
+#       with:
+#         args: 'The project {{ EVENT_PAYLOAD.repository.full_name }} has been deployed.'
