@@ -15,17 +15,18 @@ on:
 jobs:
 
   dependencies-check:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v2
-    - name: Set up Python 3.9
-      uses: actions/setup-python@v2
-      with:
-        python-version: 3.9
-    - name: Installation des dépendences
-      run:  |
-        python -m pip install --upgrade pip
-        pip install -r requirements.txt
+  runs-on: ubuntu-latest
+  steps:
+  - uses: actions/checkout@v2
+  - name: Set up Python 3.9
+    uses: actions/setup-python@v2
+    with:
+      python-version: 3.9
+  - name: Installation des dépendences
+    run:  |
+      python -m pip install --upgrade pip
+      pip install -r requirements.txt
+        
   tests:
     runs-on: ubuntu-latest
     needs: dependencies-check
@@ -37,19 +38,24 @@ jobs:
         pip install -r requirements.txt
         python manage.py collectstatic
         coverage run manage.py test
+        mkdir -p path/to/artifact
+        coverage xml
+        mv coverage.xml path/to/artifact/coverage.xml
+    - uses: actions/upload-artifact@master
+      with:
+        name: coverage
+        path: path/to/artifact
         
   quality:
     runs-on: ubuntu-latest
     needs: tests
     steps:
     - uses: actions/checkout@v2
-    - name: Tests
-      run:  |
-        python -m pip install --upgrade pip
-        pip install -r requirements.txt
-        python manage.py collectstatic
-        coverage run manage.py test
-        coverage xml
+    - uses: actions/download-artifact@master
+      with:
+        name: coverage
+        path: path/to/artifact
+    - run: mv path/to/artifact/coverage.xml coverage.xml
     - name:  Quality Gate
       uses: SonarSource/sonarcloud-github-action@master
       env:
@@ -57,49 +63,55 @@ jobs:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
   check-quality-gate:
-    runs-on: ubuntu-latest
-    needs: quality
-    steps:
-    - uses: actions/checkout@v2
-    - name: Tests
-      run:  |
-        python -m pip install --upgrade pip
-        pip install -r requirements.txt
-        python manage.py collectstatic
-        coverage run manage.py test
-        coverage xml
-    - name:  Quality Gate
-      uses: SonarSource/sonarcloud-github-action@master
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-    - name: Check Quality Gate
-      id: sonarqube-quality-gate-check
-      uses: sonarsource/sonarqube-quality-gate-action@master
-      timeout-minutes: 5
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+     runs-on: ubuntu-latest
+     needs: quality
+     steps:
+     - uses: actions/checkout@v2
+     - uses: actions/download-artifact@master
+       with:
+        name: coverage
+        path: path/to/artifact
+     - run: mv path/to/artifact/coverage.xml coverage.xml
+     - name:  Quality Gate
+       uses: SonarSource/sonarcloud-github-action@master
+       env:
+         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+     - name: Check Quality Gate
+       id: sonarqube-quality-gate-check
+       uses: sonarsource/sonarqube-quality-gate-action@master
+       timeout-minutes: 5
+       env:
+         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
   package:
     runs-on: ubuntu-latest
-    needs: check-quality-gate
+    needs: quality
     steps:
     - uses: actions/checkout@v2
     - name: Package
       run:  |
         pip install build
         python -m build 
+        
   release:
     runs-on: ubuntu-latest
-    needs: package
+    needs: check-quality-gate
     steps: 
     - uses: actions/checkout@v2
     - name: Dockerize
       run: |
         docker login -u=${{secrets.DOCKER_USERNAME }} -p=${{ secrets.DOCKER_PASSWORD }}
         docker build -t ${{secrets.DOCKER_REGISTRY_IMAGE }}:${{ github.sha }} -t  ${{secrets.DOCKER_REGISTRY_IMAGE }}:latest .
+        mkdir -p path/to/docker-artifacts
+        docker save ${{secrets.DOCKER_REGISTRY_IMAGE }}:latest > path/to/docker-artifacts/docker-image.tar
         docker push ${{secrets.DOCKER_REGISTRY_IMAGE }}:latest # only push latest tag
+    - name: Temporarily save Docker image
+      uses: actions/upload-artifact@v2
+      with:
+        name: docker-artifact
+        path: path/to/docker-artifacts
   
   branch-check:
     runs-on: ubuntu-latest
@@ -130,11 +142,17 @@ jobs:
       name: dev
     steps:
     - uses: actions/checkout@v2
-    - name: Dockerize
+    - name: Retrieve saved Docker image
+      uses: actions/download-artifact@v2
+      with:
+        name: docker-artifact
+        path: path/to/docker-artifacts
+    - name: Push Docker
       run: |
+        cd path/to/docker-artifacts
         docker login -u=${{secrets.DOCKER_USERNAME }} -p=${{ secrets.DOCKER_PASSWORD }}
-        docker build -t ${{secrets.DOCKER_REGISTRY_IMAGE }}:${{ github.sha }} -t  ${{secrets.DOCKER_REGISTRY_IMAGE }}:latest .
-        docker push ${{secrets.DOCKER_REGISTRY_IMAGE }}:latest # only push latest tag
+        docker load < docker-image.tar
+        docker push ${{secrets.DOCKER_REGISTRY_IMAGE }}:latest
     - name: Login to Heroku
       uses: akhileshns/heroku-deploy@v3.12.12
       with:
@@ -172,11 +190,17 @@ jobs:
       name: prod
     steps:
     - uses: actions/checkout@v2
-    - name: Dockerize
+    - name: Retrieve saved Docker image
+      uses: actions/download-artifact@v2
+      with:
+        name: docker-artifact
+        path: path/to/docker-artifacts
+    - name: Push Docker
       run: |
+        cd path/to/docker-artifacts
         docker login -u=${{secrets.DOCKER_USERNAME }} -p=${{ secrets.DOCKER_PASSWORD }}
-        docker build -t ${{secrets.DOCKER_REGISTRY_IMAGE }}:${{ github.sha }} -t  ${{secrets.DOCKER_REGISTRY_IMAGE }}:latest .
-        docker push ${{secrets.DOCKER_REGISTRY_IMAGE }}:latest # only push latest tag
+        docker load < docker-image.tar
+        docker push ${{secrets.DOCKER_REGISTRY_IMAGE }}:latest
     - name: Login to Heroku
       uses: akhileshns/heroku-deploy@v3.12.12
       with:
@@ -208,7 +232,8 @@ jobs:
     
   notify:
     runs-on: ubuntu-latest
-    needs: ['deploy-dev', 'deploy-prod']
+    if: ${{ always() }}
+    needs: ["deploy-dev", "deploy-prod"]
     steps:
     - uses: actions/checkout@v2
     - name: Discord notification
