@@ -61,6 +61,11 @@ jobs:
     needs: quality
     steps:
     - uses: actions/checkout@v2
+    - name:  Quality Gate
+      uses: SonarSource/sonarcloud-github-action@master
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
     - name: Check Quality Gate
       id: sonarqube-quality-gate-check
       uses: sonarsource/sonarqube-quality-gate-action@master
@@ -89,13 +94,6 @@ jobs:
         docker login -u=${{secrets.DOCKER_USERNAME }} -p=${{ secrets.DOCKER_PASSWORD }}
         docker build -t ${{secrets.DOCKER_REGISTRY_IMAGE }}:${{ github.sha }} -t  ${{secrets.DOCKER_REGISTRY_IMAGE }}:latest .
         docker push ${{secrets.DOCKER_REGISTRY_IMAGE }}:latest # only push latest tag
-        mkdir -p path/to/artifacts
-        docker save ${{secrets.DOCKER_REGISTRY_IMAGE }}:${{ github.sha }} > path/to/artifacts/docker-image.tar
-    - name: Save Docker image
-      uses: actions/upload-artifact@v2
-      with:
-        name: docker-artifact
-        path: path/to/artifacts
   
   branch-check:
     runs-on: ubuntu-latest
@@ -126,11 +124,6 @@ jobs:
       name: dev
     steps:
     - uses: actions/checkout@v2
-    - name: Retrieve saved Docker image
-      uses: actions/download-artifact@v2
-      with:
-        name: docker-artifact
-        path: path/to/artifacts
     - name: Login to Heroku
       uses: akhileshns/heroku-deploy@v3.12.12
       with:
