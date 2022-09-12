@@ -146,7 +146,7 @@ jobs:
       run: |
         cd path/to/docker-artifacts
         docker load < docker-image.tar
-        docker_build_push.sh
+        docker push docker-image.tar
     - name: Login to Heroku
       uses: akhileshns/heroku-deploy@v3.12.12
       with:
@@ -193,7 +193,7 @@ jobs:
       run: |
         cd path/to/docker-artifacts
         docker load < docker-image.tar
-        docker_build_push.sh
+        docker push docker-image.tar
     - name: Login to Heroku
       uses: akhileshns/heroku-deploy@v3.12.12
       with:
