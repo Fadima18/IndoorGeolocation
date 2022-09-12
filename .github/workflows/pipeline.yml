@@ -50,6 +50,7 @@ jobs:
         pip install -r requirements.txt
         python manage.py collectstatic
         coverage run manage.py test
+        coverage xml
     - name:  Quality Gate
       uses: SonarSource/sonarcloud-github-action@master
       env:
