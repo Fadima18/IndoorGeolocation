@@ -99,7 +99,14 @@ jobs:
       run: |
         docker login -u=${{secrets.DOCKER_USERNAME }} -p=${{ secrets.DOCKER_PASSWORD }}
         docker build -t ${{secrets.DOCKER_REGISTRY_IMAGE }}:${{ github.sha }} -t  ${{secrets.DOCKER_REGISTRY_IMAGE }}:latest .
+        mkdir -p path/to/docker-artifacts
+        docker save ${{secrets.DOCKER_REGISTRY_IMAGE }}:latest > path/to/docker-artifacts/docker-image.tar
         docker push ${{secrets.DOCKER_REGISTRY_IMAGE }}:latest # only push latest tag
+    - name: Temporarily save Docker image
+      uses: actions/upload-artifact@v2
+      with:
+        name: docker-artifact
+        path: path/to/docker-artifacts
   
   branch-check:
     runs-on: ubuntu-latest
@@ -130,6 +137,16 @@ jobs:
       name: dev
     steps:
     - uses: actions/checkout@v2
+    - name: Retrieve saved Docker image
+      uses: actions/download-artifact@v2
+      with:
+        name: docker-artifact
+        path: path/to/docker-artifacts
+    - name: Push Docker
+      run: |
+        cd path/to/docker-artifacts
+        docker load < docker-image.tar
+        docker_build_push.sh
     - name: Login to Heroku
       uses: akhileshns/heroku-deploy@v3.12.12
       with:
@@ -171,7 +188,12 @@ jobs:
       uses: actions/download-artifact@v2
       with:
         name: docker-artifact
-        path: path/to/artifacts
+        path: path/to/docker-artifacts
+    - name: Push Docker
+      run: |
+        cd path/to/docker-artifacts
+        docker load < docker-image.tar
+        docker_build_push.sh
     - name: Login to Heroku
       uses: akhileshns/heroku-deploy@v3.12.12
       with:
